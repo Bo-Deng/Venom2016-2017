@@ -1,11 +1,13 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
  * Created by Navya on 9/13/2016.
  */
+@Autonomous(name = "AutoTrollBot", group = "Auto")
 public class TrollBotAutonomous extends LinearOpMode{
 
     DcMotor motorFL;

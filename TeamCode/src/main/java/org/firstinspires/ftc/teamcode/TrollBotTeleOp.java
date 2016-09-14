@@ -1,11 +1,13 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Created by Navya on 9/12/2016.
  */
+@TeleOp(name = "TeleOpTrollBot", group = "TeleOp")
 public class TrollBotTeleOp extends OpMode {
 
     DcMotor motorFL;

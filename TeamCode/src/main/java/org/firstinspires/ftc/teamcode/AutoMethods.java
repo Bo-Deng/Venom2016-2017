@@ -17,6 +17,8 @@ public class AutoMethods extends LinearOpMode {
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+    DcMotor motorShootL;
+    DcMotor motorShootR;
 
     public void runOpMode()  {
 
@@ -56,7 +58,13 @@ public class AutoMethods extends LinearOpMode {
         }*/
     }
 
-    public void shoot ()
+    public void shoot () {
+            double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+            double shootPower = -.25 * voltage + 3.75;
+
+            motorShootL.setPower(shootPower);
+            motorShootR.setPower(shootPower);
+    }
 
 
 }

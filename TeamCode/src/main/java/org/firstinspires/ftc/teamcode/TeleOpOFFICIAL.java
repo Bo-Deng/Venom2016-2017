@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 /**
@@ -20,6 +21,7 @@ public class TeleOpOFFICIAL extends OpMode {
     DcMotor motorShootL;
     DcMotor motorShootR;
 
+    // Maps the motors and sets them in the correct direction.
     public void init() {
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
@@ -29,6 +31,10 @@ public class TeleOpOFFICIAL extends OpMode {
         manipulator = hardwareMap.dcMotor.get("manipulator");
         motorShootL = hardwareMap.dcMotor.get("motorShootL");
         motorShootR = hardwareMap.dcMotor.get("motorShootR");
+
+        motorShootL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void loop() {

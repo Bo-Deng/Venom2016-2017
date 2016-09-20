@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 /**
  * Created by Bo on 9/12/2016.
@@ -11,11 +12,13 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "TeleOpOfficial", group = "TeleOp")
 public class TeleOpOFFICIAL extends OpMode {
 
-        DcMotor motorFR;
-        DcMotor motorFL;
-        DcMotor motorBR;
-        DcMotor motorBL;
-        DcMotor manipulator;
+    DcMotor motorFR;
+    DcMotor motorFL;
+    DcMotor motorBR;
+    DcMotor motorBL;
+    DcMotor manipulator;
+    DcMotor motorShootL;
+    DcMotor motorShootR;
 
     public void init() {
 
@@ -24,6 +27,8 @@ public class TeleOpOFFICIAL extends OpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         manipulator = hardwareMap.dcMotor.get("manipulator");
+        motorShootL = hardwareMap.dcMotor.get("motorShootL");
+        motorShootR = hardwareMap.dcMotor.get("motorShootR");
     }
 
     public void loop() {
@@ -31,8 +36,9 @@ public class TeleOpOFFICIAL extends OpMode {
         double g1_leftY = gamepad1.left_stick_y;
         double g1_rightY = gamepad1.right_stick_y;
 
-        boolean leftBumper = gamepad1.left_bumper;
-        boolean rightBumper = gamepad1.right_bumper;
+        boolean g1_leftBumper = gamepad1.left_bumper;
+        boolean g1_rightBumper = gamepad1.right_bumper;
+        boolean g1_a = gamepad1.a;
 
         if (Math.abs(g1_leftY) > 0.1 ) {
 
@@ -56,18 +62,35 @@ public class TeleOpOFFICIAL extends OpMode {
             motorFR.setPower(0);
         }
 
-        if (leftBumper) {
+        if (g1_leftBumper) {
             // code for opening the manipulator
         }
 
-        else if (rightBumper) {
+        else if (g1_rightBumper) {
             // code for closing the manipulator
         }
 
         else {
-
             manipulator.setPower(0);
         }
+
+        if (g1_a) {
+            shootBall();
+        }
+        else {
+            motorShootL.setPower(0);
+            motorShootR.setPower(0);
+        }
+
+    }
+
+    public void shootBall() {
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        double shootPower = -.25 * voltage + 3.75;
+
+        motorShootL.setPower(shootPower);
+        motorShootR.setPower(shootPower);
+
 
     }
 }

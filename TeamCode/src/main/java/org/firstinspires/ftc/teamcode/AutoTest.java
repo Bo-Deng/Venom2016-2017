@@ -58,20 +58,40 @@ public class AutoTest extends LinearOpMode {
                 while (colorF.alpha() < 10) {
                     move(.5, -.5);
                 }
+                isLeft = false;
             }
             else {
                 while (colorF.alpha() < 10) {
                     move(-.5, .5);
                 }
+                isLeft = true;
             }
         }
 
         if (colorB.alpha() < 10) {
             if (isLeft) {
-                //while ()
+                while (colorF.alpha() < 10) {
+                    move(.5, -.5);
+                }
+                while (colorB.alpha() < 10) {
+                    move(.25, .25);
+                }
+                while (colorF.alpha() < 10) {
+                    move(-.5, .5);
+                }
+                isLeft = false;
             }
             else {
-
+                while (colorF.alpha() < 10) {
+                    move(-.5, .5);
+                }
+                while (colorB.alpha() < 10) {
+                    move(.25, .25);
+                }
+                while (colorF.alpha() < 10) {
+                    move(.5, -.5);
+                }
+                isLeft = true;
             }
         }
 

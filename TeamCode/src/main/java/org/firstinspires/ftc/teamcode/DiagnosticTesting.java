@@ -25,9 +25,9 @@ public class DiagnosticTesting extends OpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        colorF = hardwareMap.colorSensor.get("colorF");
-        colorB = hardwareMap.colorSensor.get("colorB");
-        colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
+        //colorF = hardwareMap.colorSensor.get("colorF");
+        //colorB = hardwareMap.colorSensor.get("colorB");
+        //colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
 
     }
 

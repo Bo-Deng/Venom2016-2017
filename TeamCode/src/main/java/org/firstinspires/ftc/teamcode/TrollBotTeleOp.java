@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by Navya on 9/12/2016.
@@ -15,6 +16,8 @@ public class TrollBotTeleOp extends OpMode {
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+    Servo servoArmL;
+    Servo servoArmR;
 
 
     public void init() {
@@ -26,6 +29,9 @@ public class TrollBotTeleOp extends OpMode {
 
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        servoArmL = hardwareMap.servo.get("servoArmL");
+        servoArmR = hardwareMap.servo.get("servoArmR");
 
         telemetry.addData("Init: ", "finished");
     }
@@ -51,6 +57,22 @@ public class TrollBotTeleOp extends OpMode {
         else {
             motorFR.setPower(0);
             motorBR.setPower(0);
+        }
+
+        if (gamepad2.left_bumper) {
+            servoArmL.setPosition(0);
+            servoArmR.setPosition(1);
+
+        }
+
+        else if (gamepad2.right_bumper) {
+            servoArmL.setPosition(1);
+            servoArmR.setPosition(0);
+        }
+
+        else {
+            servoArmR.setPosition(0.5);
+            servoArmL.setPosition(0.5);
         }
 
         telemetry.addData("left stick: ", g1_left_y);

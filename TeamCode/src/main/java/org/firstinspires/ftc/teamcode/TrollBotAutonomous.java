@@ -21,7 +21,7 @@ public class TrollBotAutonomous extends LinearOpMode{
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-
+        motorFR
 
         moveTime(-1, 1, 5000);
         moveTime(-1, -1, 500);

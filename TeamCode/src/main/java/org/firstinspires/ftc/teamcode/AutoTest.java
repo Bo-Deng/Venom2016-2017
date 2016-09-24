@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 /**
  * Created by Bo on 9/14/2016.
  */
-@Autonomous(name = "AutoTrollBot", group = "Auto")
+@Autonomous(name = "AutoTest", group = "Auto")
 public class AutoTest extends LinearOpMode {
 
     DcMotor motorFL;

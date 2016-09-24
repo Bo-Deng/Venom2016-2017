@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by Navya on 9/12/2016.
@@ -27,12 +28,14 @@ public class TrollBotTeleOp extends OpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoArmL = hardwareMap.servo.get("servoArmL");
         servoArmR = hardwareMap.servo.get("servoArmR");
 
+        servoArmL.setPosition(0.5);
+        servoArmR.setPosition(0.5);
         telemetry.addData("Init: ", "finished");
     }
 
@@ -60,19 +63,14 @@ public class TrollBotTeleOp extends OpMode {
         }
 
         if (gamepad2.left_bumper) {
-            servoArmL.setPosition(0);
-            servoArmR.setPosition(1);
+            servoArmL.setPosition(Range.clip(servoArmL.getPosition() + .05, 0, 1));
+            servoArmR.setPosition(Range.clip(servoArmR.getPosition() - .05, 0, 1));
 
         }
 
         else if (gamepad2.right_bumper) {
-            servoArmL.setPosition(1);
-            servoArmR.setPosition(0);
-        }
-
-        else {
-            servoArmR.setPosition(0.5);
-            servoArmL.setPosition(0.5);
+            servoArmL.setPosition(Range.clip(servoArmL.getPosition() - .05, 0, 1));
+            servoArmR.setPosition(Range.clip(servoArmR.getPosition() + .05, 0, 1));
         }
 
         telemetry.addData("left stick: ", g1_left_y);

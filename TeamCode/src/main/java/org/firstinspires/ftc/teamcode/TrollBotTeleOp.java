@@ -28,9 +28,6 @@ public class TrollBotTeleOp extends OpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
-
         servoArmL = hardwareMap.servo.get("servoArmL");
         servoArmR = hardwareMap.servo.get("servoArmR");
 
@@ -42,20 +39,20 @@ public class TrollBotTeleOp extends OpMode {
     public void loop(){
 
         double g1_left_y = gamepad1.left_stick_y;
-        double g1_right_y = gamepad1.right_stick_y;
+           double g1_right_y = gamepad1.right_stick_y;
 
-       if (Math.abs(gamepad1.left_stick_y) > 0.1) {
-           motorFL.setPower(gamepad1.left_stick_y);
-           motorBL.setPower(gamepad1.left_stick_y);
-       }
-        else {
-           motorFL.setPower(0);
-           motorBL.setPower(0);
+           if (Math.abs(gamepad1.left_stick_y) > 0.1) {
+               motorFL.setPower(-g1_left_y);
+               motorBL.setPower(-g1_left_y);
+           }
+           else {
+               motorFL.setPower(0);
+               motorBL.setPower(0);
        }
 
         if (Math.abs(gamepad1.right_stick_y) > 0.1) {
-            motorFR.setPower(gamepad1.right_stick_y);
-            motorBR.setPower(gamepad1.right_stick_y);
+            motorFR.setPower(-g1_right_y);
+            motorBR.setPower(g1_right_y);
         }
         else {
             motorFR.setPower(0);
@@ -63,14 +60,14 @@ public class TrollBotTeleOp extends OpMode {
         }
 
         if (gamepad2.left_bumper) {
-            servoArmL.setPosition(Range.clip(servoArmL.getPosition() + .05, 0, 1));
-            servoArmR.setPosition(Range.clip(servoArmR.getPosition() - .05, 0, 1));
+            servoArmL.setPosition(Range.clip(servoArmL.getPosition() + .02, 0, 1));
+            servoArmR.setPosition(Range.clip(servoArmR.getPosition() - .02, 0, 1));
 
         }
 
         else if (gamepad2.right_bumper) {
-            servoArmL.setPosition(Range.clip(servoArmL.getPosition() - .05, 0, 1));
-            servoArmR.setPosition(Range.clip(servoArmR.getPosition() + .05, 0, 1));
+            servoArmL.setPosition(Range.clip(servoArmL.getPosition() - .02, 0, 1));
+            servoArmR.setPosition(Range.clip(servoArmR.getPosition() + .02, 0, 1));
         }
 
         telemetry.addData("left stick: ", g1_left_y);

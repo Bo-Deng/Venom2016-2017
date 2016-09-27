@@ -50,7 +50,6 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("motorFL: ", motorFL.getCurrentPosition());
         telemetry.addData("motorFR: ", motorFR.getCurrentPosition());
         telemetry.addData("motorBL: ", motorBL.getCurrentPosition());
-        //Navya was bad and had motorFR instead of motorBR
         telemetry.addData("motorBR: ", motorBR.getCurrentPosition());
         telemetry.update();
         //Good Coding

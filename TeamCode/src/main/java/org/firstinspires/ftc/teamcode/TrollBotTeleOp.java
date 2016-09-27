@@ -17,8 +17,8 @@ public class TrollBotTeleOp extends OpMode {
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
-    Servo servoArmL;
-    Servo servoArmR;
+    //Servo servoArmL;
+   // Servo servoArmR;
 
 
     public void init() {
@@ -28,11 +28,11 @@ public class TrollBotTeleOp extends OpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        servoArmL = hardwareMap.servo.get("servoArmL");
-        servoArmR = hardwareMap.servo.get("servoArmR");
+        //servoArmL = hardwareMap.servo.get("servoArmL");
+        //servoArmR = hardwareMap.servo.get("servoArmR");
 
-        servoArmL.setPosition(0.5);
-        servoArmR.setPosition(0.5);
+        //servoArmL.setPosition(0.5);
+        //servoArmR.setPosition(0.5);
         telemetry.addData("Init: ", "finished");
     }
 
@@ -59,7 +59,7 @@ public class TrollBotTeleOp extends OpMode {
             motorBR.setPower(0);
         }
 
-        if (gamepad2.left_bumper) {
+       /*if (gamepad2.left_bumper) {
             servoArmL.setPosition(Range.clip(servoArmL.getPosition() + .02, 0, 1));
             servoArmR.setPosition(Range.clip(servoArmR.getPosition() - .02, 0, 1));
 
@@ -68,7 +68,7 @@ public class TrollBotTeleOp extends OpMode {
         else if (gamepad2.right_bumper) {
             servoArmL.setPosition(Range.clip(servoArmL.getPosition() - .02, 0, 1));
             servoArmR.setPosition(Range.clip(servoArmR.getPosition() + .02, 0, 1));
-        }
+        } */
 
         telemetry.addData("left stick: ", g1_left_y);
         telemetry.addData("right stick: ", g1_right_y);

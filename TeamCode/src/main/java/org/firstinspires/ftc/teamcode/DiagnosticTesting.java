@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -18,7 +19,7 @@ public class DiagnosticTesting extends OpMode {
     DcMotor motorBR;
     //ColorSensor colorF;
     ColorSensor colorB;
-    ColorSensor colorBeacon;
+    //ColorSensor colorBeacon;
 
     ElapsedTime time;
 
@@ -29,6 +30,7 @@ public class DiagnosticTesting extends OpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         //colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
+        colorB.setI2cAddress(I2cAddr.create8bit(0x42));
         //colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
 
         //telemetry.addData("colorF is null", colorF == null);

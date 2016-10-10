@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Bo on 9/14/2016.
@@ -21,7 +24,10 @@ public class AutoTest extends LinearOpMode {
     ColorSensor colorB;
     ColorSensor colorBeacon;
 
-    public void runOpMode() {
+    ElapsedTime time;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
 
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -31,77 +37,184 @@ public class AutoTest extends LinearOpMode {
         colorB = hardwareMap.colorSensor.get("colorB");
         colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        while (colorB.alpha() < 20) {
-            move(1, 1);
+        colorB.setI2cAddress(I2cAddr.create8bit(0x42));
+        colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
+
+        waitForStart();
+
+        time = new ElapsedTime();
+        time.reset();
+
+        /*while (time.time() < 10.0) {
+            telemetry.addData("LightF: ", colorF.alpha());
+            telemetry.addData("LightB: ", colorB.alpha());
+            telemetry.update();
+        }*/
+
+        while (colorB.alpha() < 5 && opModeIsActive()) {
+            move(.105, .105);
         }
+        move(0, 0);
+        telemetry.addData("waiting", "...");
+        sleep(3000);
         //Assuming the back color sensor is at robot pivot point
-        while (colorF.alpha() < 20) {
-            move(.5, -.5);
+        while (colorF.alpha() < 10 && opModeIsActive()) {
+            move(.115, -.115);
         }
-        while (colorBeacon.blue() < 100 && colorBeacon.red() < 100) {
-            lineFollow();
+
+        move(0, 0);
+
+        sleep(1000);
+        lineFollow(colorBeacon.blue() > 3 || colorBeacon.red() > 3);
+        pressBeacon();
+
+        /* moveTime(500, -1, -1);
+        moveTime(250, 1, -1);
+
+        while (colorB.alpha() < 5 && opModeIsActive()) {
+            move(.115, .115);
         }
+
+        while (colorF.alpha() < 5 && opModeIsActive()) {
+            move(-.115, .115);
+        }
+
+        lineFollow(colorBeacon.blue() > 4 || colorBeacon.red() > 4);
+        pressBeacon();
+        moveTime(250,-.08, .08);
+
+        while (colorF.alpha() < 5 && opModeIsActive()){
+            move(-.115, .115);
+        }
+
+        moveTime(2000, 1, 1); */
+
     }
 
-    public void lineFollow() {
+    public void lineFollow(boolean endCondition) throws InterruptedException {
         boolean isLeft = true;
 
-        while (colorF.alpha() > 10 && colorB.alpha() > 10) {
-            move(1, 1);
+        while (!endCondition && opModeIsActive()) {
+
+            while (colorF.alpha() > 10 && colorB.alpha() > 10 && !endCondition && opModeIsActive()) {
+                move(.175, .175);
+                telemetry.addData("moving", " forward");
+                telemetry.addData("colorF: ", colorF.alpha());
+                telemetry.addData("colorB: ", colorB.alpha());
+                DbgLog.error("going straight");
+            }
+
+            if (colorF.alpha() < 10) {
+                DbgLog.error("front not on line");
+                if (isLeft) {
+                    while (colorF.alpha() < 10) {
+                        move(.125, -.125);
+                        DbgLog.error("turning right");
+                    }
+                    move(0, 0);
+                    isLeft = false;
+
+                } else {
+                    while (colorF.alpha() < 10) {
+                        move(-.135, .135);
+                        DbgLog.error("turning left");
+                    }
+                    move(0, 0);
+                    DbgLog.error("it's fixed");
+                    isLeft = true;
+                    //This ain't right
+                }
+            }
+
+            if (colorB.alpha() < 10) {
+                DbgLog.error("back not on line");
+                if (isLeft) {
+                    while (colorF.alpha() < 10) {
+                        move(.125, -.125);
+                        DbgLog.error("turning right");
+                    }
+                    move(0, 0);
+                    while (colorB.alpha() < 10) {
+                        move(.125, .125);
+                    }
+                    move(0, 0);
+                    while (colorF.alpha() < 10) {
+                        move(-.125, .125);
+                        DbgLog.error("turning left");
+                    }
+                    move(0, 0);
+                    isLeft = false;
+                } else {
+                    while (colorF.alpha() < 10) {
+                        move(-.125, .125);
+                        DbgLog.error("turning left");
+                    }
+                    move(0, 0);
+                    while (colorB.alpha() < 10) {
+                        move(.125, .125);
+                    }
+                    move(0, 0);
+                    while (colorF.alpha() < 10) {
+                        move(.125, -.125);
+                        DbgLog.error("turning right");
+                    }
+                    move(0, 0);
+                    isLeft = true;
+                }
+            }
+            telemetry.addData("RED: " + colorBeacon.red(), "BLUE: " + colorBeacon.blue());
         }
-
-        if (colorF.alpha() < 10) {
-            if (isLeft) {
-                while (colorF.alpha() < 10) {
-                    move(.5, -.5);
-                }
-                isLeft = false;
-            }
-            else {
-                while (colorF.alpha() < 10) {
-                    move(-.5, .5);
-                }
-                isLeft = true;
-            }
-        }
-
-        if (colorB.alpha() < 10) {
-            if (isLeft) {
-                while (colorF.alpha() < 10) {
-                    move(.5, -.5);
-                }
-                while (colorB.alpha() < 10) {
-                    move(.25, .25);
-                }
-                while (colorF.alpha() < 10) {
-                    move(-.5, .5);
-                }
-                isLeft = false;
-            }
-            else {
-                while (colorF.alpha() < 10) {
-                    move(-.5, .5);
-                }
-                while (colorB.alpha() < 10) {
-                    move(.25, .25);
-                }
-                while (colorF.alpha() < 10) {
-                    move(.5, -.5);
-                }
-                isLeft = true;
-            }
-        }
-
-
     }
 
-    public void move(double leftSpeed, double rightSpeed) {
+    public void pressBeacon() throws InterruptedException {
+        if (!opModeIsActive())
+            return;
+
+        if (colorBeacon.red() > 3) {
+            telemetry.addData("Left side:", " is red");
+            DbgLog.error("RED RED RED RED RED");
+        }
+
+        else if (colorBeacon.blue() > 3) {
+            telemetry.addData("Left side:", " is blue");
+            DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
+        }
+
+        else {
+            telemetry.addData("Didn't pass RED threshold: " + colorBeacon.red(), "          Didn't pass BLUE threshold: " + colorBeacon.blue());
+        }
+    }
+
+    public void move(double leftSpeed, double rightSpeed) throws InterruptedException{
+        if (!opModeIsActive())
+            return;
         motorBL.setPower(leftSpeed);
-        motorBR.setPower(rightSpeed);
+        motorBR.setPower(-rightSpeed);
         motorFL.setPower(leftSpeed);
-        motorFR.setPower(rightSpeed);
+        motorFR.setPower(-rightSpeed);
+
+        //telemetry.addData("back: ", colorB.alpha());
+        //telemetry.addData("front: ", colorF.alpha());
     }
+
+    public void moveTime(int msTime, double leftSpeed, double rightSpeed) throws InterruptedException{
+        if (!opModeIsActive())
+            return;
+        motorBL.setPower(leftSpeed);
+        motorBR.setPower(-rightSpeed);
+        motorFL.setPower(leftSpeed);
+        motorFR.setPower(-rightSpeed);
+
+        sleep(msTime);
+
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+
+        //telemetry.addData("back: ", colorB.alpha());
+        //telemetry.addData("front: ", colorF.alpha());
+    }
+
 }

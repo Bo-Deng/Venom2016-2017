@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -16,7 +17,7 @@ public class DiagnosticTesting extends OpMode {
     DcMotor motorBL;
     DcMotor motorFR;
     DcMotor motorBR;
-    //ColorSensor colorF;
+    ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
 
@@ -27,11 +28,15 @@ public class DiagnosticTesting extends OpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        //colorF = hardwareMap.colorSensor.get("colorF");
+        colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
-        //colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
+        colorB.setI2cAddress(I2cAddr.create8bit(0x42));
+        colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
+        colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
+        colorBeacon.enableLed(false);
 
-        //telemetry.addData("colorF is null", colorF == null);
+
+        telemetry.addData("colorF is null", colorF == null);
         telemetry.addData("colorB is null", colorB == null);
         telemetry.addData("init: ", "finished");
         time = new ElapsedTime();
@@ -43,8 +48,10 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("Time", time.seconds());
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         telemetry.addData("Voltage: ", voltage);
-        //telemetry.addData("LightF: ", colorF.alpha());
+        telemetry.addData("LightF: ", colorF.alpha());
         telemetry.addData("LightB: ", colorB.alpha());
+        telemetry.addData("RedBeacon", colorBeacon.red());
+        telemetry.addData("BlueBeacon", colorBeacon.blue());
         //telemetry.addData("BlueF: ", colorF.blue());
         //telemetry.addData("F: ", colorF.red());
         telemetry.addData("motorFL: ", motorFL.getCurrentPosition());

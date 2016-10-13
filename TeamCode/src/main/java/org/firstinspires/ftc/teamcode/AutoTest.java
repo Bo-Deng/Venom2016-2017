@@ -66,7 +66,7 @@ public class AutoTest extends LinearOpMode {
         move(0, 0);
 
         sleep(1000);
-        lineFollow(colorBeacon.blue() > 3 || colorBeacon.red() > 3);
+        lineFollow();
         pressBeacon();
 
         /* moveTime(500, -1, -1);
@@ -92,13 +92,13 @@ public class AutoTest extends LinearOpMode {
 
     }
 
-    public void lineFollow(boolean endCondition) throws InterruptedException {
+    public void lineFollow() throws InterruptedException {
         boolean isLeft = true;
 
-        while (!endCondition && opModeIsActive()) {
+        while (opModeIsActive() && colorBeacon.red() <= 3 && colorBeacon.blue() <= 3) {
 
-            while (colorF.alpha() > 10 && colorB.alpha() > 10 && !endCondition && opModeIsActive()) {
-                move(.175, .175);
+            while (colorF.alpha() > 10 && colorB.alpha() > 10 && colorBeacon.red() <= 3 && colorBeacon.blue() <= 3 && opModeIsActive()) {
+                move(.135, .135);
                 telemetry.addData("moving", " forward");
                 telemetry.addData("colorF: ", colorF.alpha());
                 telemetry.addData("colorB: ", colorB.alpha());
@@ -109,7 +109,7 @@ public class AutoTest extends LinearOpMode {
                 DbgLog.error("front not on line");
                 if (isLeft) {
                     while (colorF.alpha() < 10) {
-                        move(.125, -.125);
+                        move(.115, -.115);
                         DbgLog.error("turning right");
                     }
                     move(0, 0);
@@ -117,7 +117,7 @@ public class AutoTest extends LinearOpMode {
 
                 } else {
                     while (colorF.alpha() < 10) {
-                        move(-.135, .135);
+                        move(-.115, .115);
                         DbgLog.error("turning left");
                     }
                     move(0, 0);
@@ -131,40 +131,42 @@ public class AutoTest extends LinearOpMode {
                 DbgLog.error("back not on line");
                 if (isLeft) {
                     while (colorF.alpha() < 10) {
-                        move(.125, -.125);
+                        move(.115, -.115);
                         DbgLog.error("turning right");
                     }
                     move(0, 0);
                     while (colorB.alpha() < 10) {
-                        move(.125, .125);
+                        move(.115, .115);
                     }
                     move(0, 0);
                     while (colorF.alpha() < 10) {
-                        move(-.125, .125);
+                        move(-.115, .115);
                         DbgLog.error("turning left");
                     }
                     move(0, 0);
                     isLeft = false;
                 } else {
                     while (colorF.alpha() < 10) {
-                        move(-.125, .125);
+                        move(-.115, .115);
                         DbgLog.error("turning left");
                     }
                     move(0, 0);
                     while (colorB.alpha() < 10) {
-                        move(.125, .125);
+                        move(.115, .115);
                     }
                     move(0, 0);
                     while (colorF.alpha() < 10) {
-                        move(.125, -.125);
+                        move(.115, -.115);
                         DbgLog.error("turning right");
                     }
                     move(0, 0);
                     isLeft = true;
                 }
             }
-            telemetry.addData("RED: " + colorBeacon.red(), "BLUE: " + colorBeacon.blue());
+            telemetry.addData("RED: " + colorBeacon.red(), "      BLUE: " + colorBeacon.blue());
+            DbgLog.error("RED: " + colorBeacon.red() + "     BLUE: " + colorBeacon.blue());
         }
+        move(0, 0);
     }
 
     public void pressBeacon() throws InterruptedException {
@@ -172,17 +174,27 @@ public class AutoTest extends LinearOpMode {
             return;
 
         if (colorBeacon.red() > 3) {
-            telemetry.addData("Left side:", " is red");
-            DbgLog.error("RED RED RED RED RED");
+            time.reset();
+            while (time.time() < 3) {
+                telemetry.addData("Left side:", " is red");
+                DbgLog.error("RED RED RED RED RED");
+            }
         }
 
         else if (colorBeacon.blue() > 3) {
-            telemetry.addData("Left side:", " is blue");
-            DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
+            time.reset();
+            while (time.time() < 3) {
+                telemetry.addData("Left side:", " is blue");
+                DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
+            }
         }
 
         else {
-            telemetry.addData("Didn't pass RED threshold: " + colorBeacon.red(), "          Didn't pass BLUE threshold: " + colorBeacon.blue());
+            time.reset();
+            while (time.time() < 3) {
+                telemetry.addData("LOW BLUE " + colorBeacon.blue(),    "LOW RED " + colorBeacon.red());
+                DbgLog.error("LOW BLUE " + colorBeacon.blue(),"       LOW RED " + colorBeacon.red());
+            }
         }
     }
 

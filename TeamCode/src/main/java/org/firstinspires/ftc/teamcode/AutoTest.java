@@ -229,4 +229,6 @@ public class AutoTest extends LinearOpMode {
         //telemetry.addData("front: ", colorF.alpha());
     }
 
+    
+
 }

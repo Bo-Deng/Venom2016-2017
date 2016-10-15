@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+//import com.qualcomm.robotcore.hardware.
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -20,6 +21,7 @@ public class DiagnosticTesting extends OpMode {
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
+
 
     ElapsedTime time;
 

@@ -234,15 +234,14 @@ public class AutoTest extends LinearOpMode {
 
     public void turn(int turnAngle) throws InterruptedException { // -179.9999 to 180 deg
         imu.IMUinit();
-        double IMUyaw = 0.0;
         if (turnAngle < 0) {
-            while (IMUyaw < turnAngle - 3) {
+            while (imu.getYaw() < turnAngle - 3) {
                 move(-.25, .25);
             }
             move(0, 0);
         }
         if (turnAngle > 0) {
-            while (IMUyaw > turnAngle - 3) {
+            while (imu.getYaw() > turnAngle - 3) {
                 move(.25, -.25);
             }
             move(0, 0);

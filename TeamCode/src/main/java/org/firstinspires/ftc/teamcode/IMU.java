@@ -36,6 +36,12 @@ public class IMU extends SensorAdafruitIMU{
         telemetry.addData("imu successfully initialized", "");
     }
 
+    public double getYaw() { //returns yaw between -179.9999 and 180 degrees
+        angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        double origAngle = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        return (origAngle > 180) ? origAngle - 360 : origAngle;
+    }
+
     public void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -7,6 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 //import com.qualcomm.robotcore.hardware.
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.Locale;
 
 /**
  * Created by Bo on 9/19/2016.
@@ -21,6 +30,7 @@ public class DiagnosticTesting extends OpMode {
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
+    IMU imu;
 
 
     ElapsedTime time;
@@ -37,6 +47,7 @@ public class DiagnosticTesting extends OpMode {
         colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
         colorBeacon.enableLed(false);
 
+        imu.IMUinit();
 
         telemetry.addData("colorF is null", colorF == null);
         telemetry.addData("colorB is null", colorB == null);
@@ -46,6 +57,8 @@ public class DiagnosticTesting extends OpMode {
     }
 
     public void loop() {
+
+        Orientation angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
         telemetry.addData("Time", time.seconds());
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
@@ -60,6 +73,7 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("motorFR: ", motorFR.getCurrentPosition());
         telemetry.addData("motorBL: ", motorBL.getCurrentPosition());
         telemetry.addData("motorBR: ", motorBR.getCurrentPosition());
+        telemetry.addData("IMUyaw: ", imu.formatAngle(angles.angleUnit, angles.firstAngle));
         telemetry.update();
         //Good Coding
 //        telemetry.deupdate();
@@ -73,4 +87,5 @@ public class DiagnosticTesting extends OpMode {
 //        telemetry.clearAll();
         //End of Good Coding by Nikhil
     }
+
 }

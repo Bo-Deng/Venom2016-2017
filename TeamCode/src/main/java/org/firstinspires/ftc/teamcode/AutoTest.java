@@ -23,6 +23,7 @@ public class AutoTest extends LinearOpMode {
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
+    IMU imu;
 
     ElapsedTime time;
 
@@ -40,6 +41,8 @@ public class AutoTest extends LinearOpMode {
 
         colorB.setI2cAddress(I2cAddr.create8bit(0x42));
         colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
+
+        imu.IMUinit();
 
         waitForStart();
 
@@ -229,6 +232,22 @@ public class AutoTest extends LinearOpMode {
         //telemetry.addData("front: ", colorF.alpha());
     }
 
+    public void turn(int turnAngle) throws InterruptedException { // -179.9999 to 180 deg
+        imu.IMUinit();
+        double IMUyaw = 0.0;
+        if (turnAngle < 0) {
+            while (IMUyaw < turnAngle - 3) {
+                move(-.25, .25);
+            }
+            move(0, 0);
+        }
+        if (turnAngle > 0) {
+            while (IMUyaw > turnAngle - 3) {
+                move(.25, -.25);
+            }
+            move(0, 0);
+        }
+    }
     
 
 }

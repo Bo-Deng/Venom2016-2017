@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 //import com.qualcomm.robotcore.hardware.
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -33,6 +34,7 @@ public class DiagnosticTesting extends OpMode {
     IMU imu;
 
 
+
     ElapsedTime time;
 
     public void init() {
@@ -47,7 +49,8 @@ public class DiagnosticTesting extends OpMode {
         colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
         colorBeacon.enableLed(false);
 
-        imu.IMUinit();
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "IMU"));
+        imu.IMUinit(hardwareMap);
 
         telemetry.addData("colorF is null", colorF == null);
         telemetry.addData("colorB is null", colorB == null);
@@ -59,7 +62,6 @@ public class DiagnosticTesting extends OpMode {
     public void loop() {
 
         Orientation angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-
         telemetry.addData("Time", time.seconds());
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         telemetry.addData("Voltage: ", voltage);
@@ -73,7 +75,7 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("motorFR: ", motorFR.getCurrentPosition());
         telemetry.addData("motorBL: ", motorBL.getCurrentPosition());
         telemetry.addData("motorBR: ", motorBR.getCurrentPosition());
-        telemetry.addData("IMUyaw: ", imu.formatAngle(angles.angleUnit, angles.firstAngle));
+        telemetry.addData("IMUyaw: ", imu.getYaw());
         telemetry.update();
         //Good Coding
 //        telemetry.deupdate();

@@ -46,40 +46,32 @@ public class AutoTest extends LinearOpMode {
         imu = new IMU(hardwareMap.get(BNO055IMU.class, "IMU"));
         imu.IMUinit(hardwareMap);
 
+        time = new ElapsedTime();
         telemetry.addData("Init", " completed");
         waitForStart();
 
-        time = new ElapsedTime();
-        time.reset();
-
-        /*while (time.time() < 10.0) {
-            telemetry.addData("LightF: ", colorF.alpha());
-            telemetry.addData("LightB: ", colorB.alpha());
-            telemetry.update();
-        }*/
-
-        /*move(1, 1);
-        sleep(1000);
+        move(1, 1);
+        sleep(750);
         while (colorB.alpha() < 5 && opModeIsActive()) {
-            move(.105, .105);
+            move(.100, .100);
         }
         //sleep(50); //ensures that it overshoots, so that it will start facing right
         move(0, 0);
         sleep(250);
         telemetry.addData("WAITING WAITING WAITING WAITING", "...");
         //Assuming the back color sensor is at robot pivot point
-        while (colorF.alpha() < 10 && opModeIsActive()) {
+        while (colorF.alpha() < 5 && opModeIsActive()) {
             move(.115, -.115);
         }
 
         move(0, 0);
-        lineFollow();
-        pressBeacon(); */
+        lineFollow(false);
+        pressBeacon();
+
+        moveTime(500, -1, -1);
+
         turn(90);
-
-        /* moveTime(500, -1, -1);
-        moveTime(250, 1, -1);
-
+/*
         while (colorB.alpha() < 5 && opModeIsActive()) {
             move(.115, .115);
         }
@@ -88,20 +80,20 @@ public class AutoTest extends LinearOpMode {
             move(-.115, .115);
         }
 
-        lineFollow(colorBeacon.blue() > 4 || colorBeacon.red() > 4);
+        lineFollow(true);
         pressBeacon();
-        moveTime(250,-.08, .08);
+        moveTime(250, -.08, .08);
 
         while (colorF.alpha() < 5 && opModeIsActive()){
             move(-.115, .115);
         }
 
-        moveTime(2000, 1, 1); */
-
+        moveTime(2000, 1, 1);
+*/
     }
 
-    public void lineFollow() throws InterruptedException {
-        boolean isLeft = false;
+    public void lineFollow(boolean left) throws InterruptedException {
+        boolean isLeft = left;
 
         while (opModeIsActive() && colorBeacon.red() <= 3 && colorBeacon.blue() <= 3) {
 
@@ -238,17 +230,17 @@ public class AutoTest extends LinearOpMode {
     }
 
     public void turn(double turnAngle) throws InterruptedException { // -179.9999 to 180 deg
-        imu.IMUinit(hardwareMap);
+        imu.IMUinit(hardwareMap);                                    // negative is clockwise positive is counter
         if (turnAngle > 0) {
             DbgLog.error("turnAngle > 0");
-            while (imu.getYaw() < turnAngle - 5) {
+            while (imu.getYaw() < turnAngle - 1.75) {
                 move(-.25, .25);
             }
             move(0, 0);
         }
         else if (turnAngle < 0) {
             DbgLog.error("turnAngle < 0");
-            while (imu.getYaw() > turnAngle - 5) {
+            while (imu.getYaw() > turnAngle - 1.75) {
                 move(.25, -.25);
             }
             move(0, 0);
@@ -256,6 +248,4 @@ public class AutoTest extends LinearOpMode {
         DbgLog.error("Done turning: ");
         DbgLog.error("" + imu.getYaw());
     }
-    
-
 }

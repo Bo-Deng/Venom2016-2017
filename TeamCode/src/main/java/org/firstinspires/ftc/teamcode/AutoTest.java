@@ -58,37 +58,43 @@ public class AutoTest extends LinearOpMode {
         move(.5, .5);
         sleep(50);
         move(1, 1);
-        sleep(750);
+        sleep(850);
         while (colorB.alpha() < 3 && opModeIsActive()) {
             move(.100, .100);
         }
         //sleep(50); //ensures that it overshoots, so that it will start facing right
         move(0, 0);
-        sleep(250);
+        sleep(100);
         telemetry.addData("WAITING WAITING WAITING WAITING", "...");
         //Assuming the back color sensor is at robot pivot point
         while (colorF.alpha() < 3 && opModeIsActive()) {
             move(.115, -.115);
         }
-
+        //DbgLog.error("IMUyaw: " + imu.getYaw());
         move(0, 0);
+        DbgLog.error("LINE FOLLOWING STARTS HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        sleep(500);
         lineFollow(false);
         pressBeacon();
 
-        moveTime(50, -1, -1);
+        moveTime(150, -1, -1);
 
         turn(-90);
 
-        moveTime(508, .25, .25);
+        moveTime(558, .5, .5);
 
         while (colorB.alpha() < 3 && opModeIsActive()) {
-            move(.115, .115);
+            move(.100, .100);
         }
+
+        move(0, 0);
+        sleep(100);
 
         while (colorF.alpha() < 3 && opModeIsActive()) {
             move(-.115, .115);
         }
-
+        move(0, 0);
+        sleep(50);
         lineFollow(true);
         pressBeacon();
 
@@ -108,11 +114,11 @@ public class AutoTest extends LinearOpMode {
         while (opModeIsActive() && colorBeacon.red() <= 3 && colorBeacon.blue() <= 3) {
 
             while (colorF.alpha() > 10 && colorB.alpha() > 10 && colorBeacon.red() <= 3 && colorBeacon.blue() <= 3 && opModeIsActive()) {
-                move(.135, .135);
+                move(.125, .125);
                 telemetry.addData("moving", " forward");
                 telemetry.addData("colorF: ", colorF.alpha());
                 telemetry.addData("colorB: ", colorB.alpha());
-                DbgLog.error("going straight");
+                //DbgLog.error("going straight");
             }
 
             if (colorF.alpha() < 10) {
@@ -120,7 +126,7 @@ public class AutoTest extends LinearOpMode {
                 if (isLeft) {
                     while (colorF.alpha() < 10 && opModeIsActive()) {
                         move(.115, -.115);
-                        DbgLog.error("turning right");
+                        //DbgLog.error("turning right");
                     }
                     move(0, 0);
                     isLeft = false;
@@ -128,29 +134,22 @@ public class AutoTest extends LinearOpMode {
                 } else {
                     while (colorF.alpha() < 10 && opModeIsActive()) {
                         move(-.115, .115);
-                        DbgLog.error("turning left");
+                        //DbgLog.error("turning left");
                     }
                     move(0, 0);
-                    DbgLog.error("it's fixed");
+                    //DbgLog.error("it's fixed");
                     isLeft = true;
                     //This ain't right
                 }
             }
 
             if (colorB.alpha() < 10) {
+
                 DbgLog.error("back not on line");
                 if (isLeft) {
-                    while (colorB.alpha() < 10 && opModeIsActive()) {
-                        move(.115, .115);
-                    }
-                    move(0, 0);
                     while (colorF.alpha() < 10 && opModeIsActive()) {
-                        move(-.115, .115);
-                        DbgLog.error("turning left");
+                        move(.115, -.115);
                     }
-                    move(0, 0);
-                    isLeft = true;
-                } else {
                     move(0, 0);
                     while (colorB.alpha() < 10 && opModeIsActive()) {
                         move(.115, .115);
@@ -158,14 +157,34 @@ public class AutoTest extends LinearOpMode {
                     move(0, 0);
                     while (colorF.alpha() < 10 && opModeIsActive()) {
                         move(.115, -.115);
-                        DbgLog.error("turning right");
                     }
                     move(0, 0);
                     isLeft = false;
+                } else {
+                    while (colorF.alpha() < 10 && opModeIsActive()) {
+                        move(-.115, .115);
+                    }
+                    move(0, 0);
+                    DbgLog.error("turning left");
+                    sleep(500);
+
+                    while (colorB.alpha() < 10 && opModeIsActive()) {
+                        move(.115, .115);
+                    }
+                    move(0, 0);
+                    DbgLog.error("moving straight");
+                    sleep(500);
+
+                    while (colorF.alpha() < 10 && opModeIsActive()) {
+                        move(-.115, .115);
+                    }
+                    move(0, 0);
+                    DbgLog.error("turning left");
+                    sleep(500);
+
+                    isLeft = true;
                 }
             }
-            telemetry.addData("RED: " + colorBeacon.red(), "      BLUE: " + colorBeacon.blue());
-            DbgLog.error("RED: " + colorBeacon.red() + "     BLUE: " + colorBeacon.blue());
         }
         move(0, 0);
     }
@@ -178,7 +197,7 @@ public class AutoTest extends LinearOpMode {
             time.reset();
             while (time.time() < 3 && opModeIsActive()) {
                 telemetry.addData("Left side:", " is red");
-                DbgLog.error("RED RED RED RED RED");
+                //DbgLog.error("RED RED RED RED RED");
             }
         }
 
@@ -186,7 +205,7 @@ public class AutoTest extends LinearOpMode {
             time.reset();
             while (time.time() < 3 && opModeIsActive()) {
                 telemetry.addData("Left side:", " is blue");
-                DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
+                //DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
             }
         }
 
@@ -231,24 +250,27 @@ public class AutoTest extends LinearOpMode {
     }
 
     public void turn(double turnAngle) throws InterruptedException { // -179.9999 to 180 deg
+        if (!opModeIsActive())
+            return;
+
         imu.IMUinit(hardwareMap);                                    // negative is clockwise positive is counter
         DbgLog.error("" + imu.getYaw());
         if (turnAngle > 0) { //turn left
             DbgLog.error("turnAngle > 0");
-            move(-.25, .25);
-            while (imu.getYaw() < turnAngle - 30) {
+            move(-.125, .125);
+            while (imu.getYaw() < turnAngle - 10) {
             }
             move(0, 0);
         }
         else if (turnAngle < 0) {  //turn right
             DbgLog.error("turnAngle < 0");
-            move(.25, -.25);
-            while (imu.getYaw() > turnAngle + 30) {
+            move(.125, -.125);
+            while (imu.getYaw() > turnAngle + 10) {
             }
             move(0, 0);
         }
-        sleep(500);
-        DbgLog.error("Done turning: ");
-        DbgLog.error("" + imu.getYaw());
+        //sleep(500);
+        //DbgLog.error("Done turning: ");
+        //DbgLog.error("" + imu.getYaw());
     }
 }

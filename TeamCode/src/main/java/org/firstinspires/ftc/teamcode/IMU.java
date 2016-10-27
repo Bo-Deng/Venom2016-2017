@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.drawable.GradientDrawable;
 
+import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -50,6 +51,7 @@ public class IMU extends LinearOpMode{
         //IMU.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         telemetry.addData("imu successfully initialized", "");
+        DbgLog.error("IMU SUCCESSFULLY INITIALIZED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     public double getYaw() { //returns yaw between -179.9999 and 180 degrees

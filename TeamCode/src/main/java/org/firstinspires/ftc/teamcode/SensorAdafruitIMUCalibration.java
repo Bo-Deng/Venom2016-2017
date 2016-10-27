@@ -195,7 +195,6 @@ public class SensorAdafruitIMUCalibration extends LinearOpMode
                 angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
                 }
             });
-
         telemetry.addLine()
             .addData("status", new Func<String>() {
                 @Override public String value() {

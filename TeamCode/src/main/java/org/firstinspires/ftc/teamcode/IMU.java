@@ -33,14 +33,14 @@ public class IMU extends LinearOpMode{
         IMU = imu;
     }
 
-    public void IMUinit(HardwareMap map) { //weird mapping issue; don't use for now
+    public void IMUinit(HardwareMap map) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        // parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
@@ -57,7 +57,7 @@ public class IMU extends LinearOpMode{
     public double getYaw() { //returns yaw between -179.9999 and 180 degrees
         angles   = IMU.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         double origAngle = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
-        return (origAngle > 180) ? origAngle - 360 : origAngle;
+        return (origAngle > 180) ? -(origAngle - 360) : -origAngle;  //NEEDS TO BE TESTED BEFORE ANYTHING ELSE
     }
 
     void composeTelemetry() {

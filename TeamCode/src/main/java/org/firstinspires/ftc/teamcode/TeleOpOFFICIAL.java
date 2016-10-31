@@ -22,6 +22,8 @@ public class TeleOpOFFICIAL extends OpMode {
     DcMotor motorShootL;
     DcMotor motorShootR;
 
+    int warmUpMs = 88;
+
     // Maps the motors and sets them in the correct direction.
     public void init() {
 
@@ -105,8 +107,6 @@ public class TeleOpOFFICIAL extends OpMode {
         double shootPower = -.25 * voltage + 3.75;
         ElapsedTime time = new ElapsedTime();
 
-        time.time();
-
         while (time.time() < 78){
             motorShootL.setPower(shootPower/4);
             motorShootR.setPower(-shootPower/4);
@@ -132,26 +132,24 @@ public class TeleOpOFFICIAL extends OpMode {
 
     public void endShoot() {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        double shootPower = -.25 * voltage + 3.75;
+        double shootPower = -.25 * voltage + 3.9;
         ElapsedTime time = new ElapsedTime();
 
-        time.time();
-
-        while (time.time() < 78){
+        while (time.time() < warmUpMs){
             motorShootL.setPower(shootPower/2);
             motorShootR.setPower(-shootPower/2);
         }
 
         time.reset();
 
-        while (time.time() < 78){
+        while (time.time() < warmUpMs){
             motorShootL.setPower(shootPower/4);
             motorShootR.setPower(-shootPower/4);
         }
 
         time.reset();
 
-        while (time.time() < 78){
+        while (time.time() < warmUpMs){
             motorShootL.setPower(0);
             motorShootR.setPower(0);
         }

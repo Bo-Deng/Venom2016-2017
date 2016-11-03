@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * Created by Navya on 9/12/2016.
- */
 @TeleOp(name = "TeleOpTrollBot", group = "TeleOp")
 public class TrollBotTeleOp extends OpMode {
 

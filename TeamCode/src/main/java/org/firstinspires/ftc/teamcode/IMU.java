@@ -20,9 +20,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
-/**
- * Created by Bo on 10/15/2016.
- */
 @Autonomous(name = "IMU object: DO NOT RUN", group = "Sensor")
 public class IMU extends LinearOpMode{
     BNO055IMU IMU;

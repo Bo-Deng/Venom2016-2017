@@ -8,9 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-/**
- * Created by Bo on 9/12/2016.
- */
+
 @TeleOp(name = "TeleOpOfficial", group = "TeleOp")
 public class TeleOpOFFICIAL extends OpMode {
 

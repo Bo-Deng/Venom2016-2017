@@ -10,9 +10,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
-/**
- * Created by Bo on 10/29/2016.
- */
+
 @Autonomous(name = "PIDtest", group = "test")
 public class PIDtest extends LinearOpMode {
 
@@ -48,7 +46,7 @@ public class PIDtest extends LinearOpMode {
         motorBR.setPower(rightSpeed);
     }
 
-    public void Pstraight(double speed, int msTime){
+    public void Pstraight(double speed, int msTime) {
 
         double desiredAngle = imu.getYaw();
         double kP = 0.016;
@@ -66,8 +64,7 @@ public class PIDtest extends LinearOpMode {
             if (angleDiff < 0) {
                 PIDchange = -angleDiff * kP;
                 rightSpeed -= PIDchange;
-            }
-            else if (angleDiff > 0){
+            } else if (angleDiff > 0) {
                 PIDchange = angleDiff * kP;
                 leftSpeed -= PIDchange;
             }
@@ -90,20 +87,20 @@ public class PIDtest extends LinearOpMode {
         while (time.milliseconds() < msTime) {
             angleDiff = degTurn - imu.getYaw();
             leftSpeed = 0;
-            
+            rightSpeed = 0;
+
             if (angleDiff < 0) {
                 PIDchange = -angleDiff * kP;
                 leftSpeed = -(PIDchange / 2);
                 rightSpeed = PIDchange / 2;
-            }
-            else if (angleDiff > 0) {
+            } else if (angleDiff > 0) {
                 PIDchange = angleDiff * kP;
                 leftSpeed = PIDchange / 2;
                 rightSpeed = -(PIDchange / 2);
 
+            }
             setMotors(leftSpeed, rightSpeed);
         }
         setMotors(0, 0);
-
     }
 }

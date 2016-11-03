@@ -11,9 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * Created by Bo on 9/14/2016.
- */
 @Autonomous(name = "AutoTest", group = "Auto")
 public class AutoTest extends LinearOpMode {
 

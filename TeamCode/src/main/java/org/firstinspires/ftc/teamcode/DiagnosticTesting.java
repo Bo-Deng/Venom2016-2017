@@ -56,12 +56,10 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("colorB is null", colorB == null);
         telemetry.addData("init: ", "finished");
         time = new ElapsedTime();
-        time.reset();
     }
 
     public void loop() {
 
-        Orientation angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         telemetry.addData("Time", time.seconds());
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         telemetry.addData("Voltage: ", voltage);
@@ -69,8 +67,6 @@ public class DiagnosticTesting extends OpMode {
         telemetry.addData("LightB: ", colorB.alpha());
         telemetry.addData("RedBeacon", colorBeacon.red());
         telemetry.addData("BlueBeacon", colorBeacon.blue());
-        //telemetry.addData("BlueF: ", colorF.blue());
-        //telemetry.addData("F: ", colorF.red());
         telemetry.addData("motorFL: ", motorFL.getCurrentPosition());
         telemetry.addData("motorFR: ", motorFR.getCurrentPosition());
         telemetry.addData("motorBL: ", motorBL.getCurrentPosition());

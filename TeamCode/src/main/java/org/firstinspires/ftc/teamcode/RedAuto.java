@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "AutoTest", group = "Auto")
-public class AutoTest extends LinearOpMode {
+@Autonomous(name = "RedAuto", group = "Auto")
+public class RedAuto extends LinearOpMode {
 
     DcMotor motorFL;
     DcMotor motorBL;
@@ -65,18 +65,18 @@ public class AutoTest extends LinearOpMode {
         telemetry.addData("WAITING WAITING WAITING WAITING", "...");
         //Assuming the back color sensor is at robot pivot point
         while (colorF.alpha() < 3 && opModeIsActive()) {
-            move(.115, -.115);
+            move(-.115, .115);
         }
         //DbgLog.error("IMUyaw: " + imu.getYaw());
         move(0, 0);
         DbgLog.error("LINE FOLLOWING STARTS HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         sleep(400);
-        lineFollow(false);
+        lineFollow(true);
         pressBeacon();
 
         moveTime(158, -1, -1);
 
-        turn(90);
+        turn(-90);
 
         moveTime(50, .125, .125);
         moveTime(50, .25, .25);
@@ -90,11 +90,11 @@ public class AutoTest extends LinearOpMode {
         sleep(100);
 
         while (colorF.alpha() < 3 && opModeIsActive()) {
-            move(-.150, .150);
+            move(.150, -.150);
         }
         move(0, 0);
         sleep(50);
-        lineFollow(true);
+        lineFollow(false);
         pressBeacon();
 
        /* moveTime(250, -.08, .08);
@@ -194,16 +194,16 @@ public class AutoTest extends LinearOpMode {
 
         if (colorBeacon.red() > 3) {
             time.reset();
-            while (time.time() < 3 && opModeIsActive()) {
-                telemetry.addData("Left side:", " is red");
+            while (time.milliseconds() < 200 && opModeIsActive()) {
+                telemetry.addData("Right:", " is red");
                 //DbgLog.error("RED RED RED RED RED");
             }
         }
 
         else if (colorBeacon.blue() > 3) {
             time.reset();
-            while (time.time() < 3 && opModeIsActive()) {
-                telemetry.addData("Left side:", " is blue");
+            while (time.milliseconds() < 200 && opModeIsActive()) {
+                telemetry.addData("Right:", " is blue");
                 //DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
             }
         }

@@ -61,12 +61,13 @@ public class DiagnosticTesting extends OpMode {
     public void loop() {
 
         telemetry.addData("Time", time.seconds());
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        telemetry.addData("Voltage: ", voltage);
+        //double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        //telemetry.addData("Voltage: ", voltage);
         telemetry.addData("LightF: ", colorF.alpha());
         telemetry.addData("LightB: ", colorB.alpha());
         telemetry.addData("RedBeacon", colorBeacon.red());
         telemetry.addData("BlueBeacon", colorBeacon.blue());
+        telemetry.addData("BeaconLight: ", colorBeacon.alpha());
         telemetry.addData("motorFL: ", motorFL.getCurrentPosition());
         telemetry.addData("motorFR: ", motorFR.getCurrentPosition());
         telemetry.addData("motorBL: ", motorBL.getCurrentPosition());

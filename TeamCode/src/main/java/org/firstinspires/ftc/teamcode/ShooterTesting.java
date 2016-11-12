@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.ftccommon.DbgLog;
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -17,11 +22,26 @@ public class ShooterTesting extends OpMode {
     DcMotor motorFL;
     DcMotor motorBR;
     DcMotor motorBL;
-    DcMotor manipulator;
+    DcMotor motorM;
     DcMotor motorLaunchL;
     DcMotor motorLaunchR;
+    DcMotor motorLift;
+
+    Servo servoButtonAuto;
+    CRServo servoButtonL;
+    CRServo servoButtonR;
+    CRServo servoCapL;
+    CRServo servoCapR;
+
+
+    ColorSensor colorF;
+    ColorSensor colorB;
+    ColorSensor colorBeacon;
+    IMU imu;
+
 
     int warmUpMs = 88;
+    double shootPower = .75;
 
     // Maps the motors and sets them in the correct direction.
     public void init() {
@@ -30,13 +50,33 @@ public class ShooterTesting extends OpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
-        manipulator = hardwareMap.dcMotor.get("motorM");
+        motorM = hardwareMap.dcMotor.get("motorM");
         motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
         motorLaunchR = hardwareMap.dcMotor.get("motorLaunchR");
+        motorLift = hardwareMap.dcMotor.get("motorLift");
+
+        servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
+        servoButtonL = hardwareMap.crservo.get("servoButtonL");
+        servoButtonR = hardwareMap.crservo.get("servoButtonR");
+        servoCapL = hardwareMap.crservo.get("servoCapL");
+        servoCapR = hardwareMap.crservo.get("servoCapR");
+
+        colorF = hardwareMap.colorSensor.get("colorF");
+        colorB = hardwareMap.colorSensor.get("colorB");
+        colorB.setI2cAddress(I2cAddr.create8bit(0x42));
+        colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
+        colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
+        colorBeacon.enableLed(false);
+
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "IMU"));
+        imu.IMUinit(hardwareMap);
 
         //motorLaunchL.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        servoButtonAuto.setPosition(.5);
+
     }
 
     public void loop() {
@@ -52,9 +92,17 @@ public class ShooterTesting extends OpMode {
         boolean g1_down = gamepad1.dpad_down;
 
         boolean isShooting = false;
-        double shootPower = .75;
-        
+
+
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+
+        if (g1_leftY < -0.1) {
+            motorM.setPower(1);
+        } else if (g1_leftY > 0.1) {
+            motorM.setPower(-.2);
+        } else {
+            motorM.setPower(0);
+        }
 
         if (g1_up) {
             shootPower += .01;
@@ -67,6 +115,12 @@ public class ShooterTesting extends OpMode {
         motorLaunchR.setPower(shootPower);
 
         if (g1_x) {
+            motorLaunchL.setPower(0);
+            motorLaunchR.setPower(0);
+            try {
+                Thread.sleep(5000);
+            } catch (Exception E) {
+            }
             DbgLog.error("voltage: " + voltage);
             DbgLog.error("shootPower: " + shootPower);
         }

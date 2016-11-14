@@ -71,15 +71,15 @@ public class CloseBlueAuto extends LinearOpMode {
         //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoButtonAuto.setPosition(.5);
+        servoButtonAuto.setPosition(.25);
         telemetry.addData("init ", "complete");
         waitForStart();
 
-        move(.25, .2125);
+        move(.25, .225);
         sleep(75);            //warms up motors on the way to beacon
-        move(.5, .425);
+        move(.5, .45);
         sleep(75);
-        move(1, .85);
+        move(1, .9);
         sleep(750);
         while (colorB.alpha() < 3 && opModeIsActive()) {  //
             move(.275, .26);
@@ -236,9 +236,9 @@ public class CloseBlueAuto extends LinearOpMode {
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE");
         }
         sleep(100);
-        moveTime(1000, .6, .6);
+        moveTime(1200, .6, .6);
         sleep(200);
-        moveTime(1000, -.6, -.6);
+        moveTime(1200, -.6, -.6);
     }
 
     public void move(double leftSpeed, double rightSpeed) throws InterruptedException{

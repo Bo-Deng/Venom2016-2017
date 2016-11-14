@@ -164,7 +164,7 @@ public class TeleOpOFFICIAL extends OpMode {
         if (g2_rightTrigger > 0.1) {
             launcherSpeed = Range.clip(launcherSpeed + .1, 0, 1);
             try {
-                wait(100);
+                Thread.sleep(50);
             }
             catch (Exception E){
             }
@@ -176,7 +176,7 @@ public class TeleOpOFFICIAL extends OpMode {
         else {
             launcherSpeed = Range.clip(launcherSpeed - .1, 0, 1);
             try {
-                wait(100);
+                Thread.sleep(50);
             }
             catch (Exception E){
             }

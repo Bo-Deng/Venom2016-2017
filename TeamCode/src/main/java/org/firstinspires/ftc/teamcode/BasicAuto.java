@@ -18,6 +18,8 @@ public class BasicAuto extends LinearOpMode {
     DcMotor motorLaunchR;
     DcMotor motorLaunchL;
 
+    double launchSpeed = 0.0;
+
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -29,12 +31,33 @@ public class BasicAuto extends LinearOpMode {
         motorLaunchR = hardwareMap.dcMotor.get("motorBL");
         motorLaunchL = hardwareMap.dcMotor.get("motorBL");
 
+        waitForStart();
+        moveTime(100, -0.5, 0.5);
+
+        while (launchSpeed < 1) {
+
+            motorLaunchR.setPower(launchSpeed);
+            motorLaunchL.setPower(launchSpeed);
+        }
+
+        motorLaunchL.setPower(0);
+        motorLaunchR.setPower(0);
 
 
     }
 
-    public void move(int leftSpeed, int rightSpeed){
-        motorBL.setPower(0.5);
+    public void moveTime(int msTime, double leftSpeed, double rightSpeed) throws InterruptedException{
+        motorBL.setPower(-leftSpeed);
+        motorBR.setPower(-rightSpeed);
+        motorFL.setPower(leftSpeed);
+        motorFR.setPower(rightSpeed);
+
+        sleep(msTime);
+
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
 
     }
 }

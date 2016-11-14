@@ -71,7 +71,7 @@ public class CloseRedAuto extends LinearOpMode {
         //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoButtonAuto.setPosition(.5);
+        servoButtonAuto.setPosition(.25);
         telemetry.addData("init ", "complete");
         waitForStart();
 
@@ -238,6 +238,7 @@ public class CloseRedAuto extends LinearOpMode {
         sleep(100);
         moveTime(1200, .6, .6);
         sleep(200);
+        //moveTime(1200, -.6, -.6);
         moveTime(1200, -.6, -.6);
     }
 

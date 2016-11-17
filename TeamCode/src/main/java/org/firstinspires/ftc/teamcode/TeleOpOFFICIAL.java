@@ -31,7 +31,6 @@ public class TeleOpOFFICIAL extends OpMode {
     CRServo servoCapL;
     CRServo servoCapR;
 
-
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
@@ -206,25 +205,24 @@ public class TeleOpOFFICIAL extends OpMode {
             servoButtonR.setPower(0);
         }
 
-        if (g2_rightBumper) {
-            servoCapL.setPower(-.9);
-            servoCapR.setPower(1);
+        /*if (g2_rightBumper) {
+            servoCapL.setPosition(0);
+            servoCapR.setPosition(0);
         }
         else if (g2_leftBumper) {
-            servoCapL.setPower(1);
-            servoCapR.setPower(-1);
+            servoCapL.setPosition(1);
+            servoCapR.setPosition(1);
         }
         else {
-            servoCapL.setPower(0);
-            servoCapR.setPower(0);
-        }
+            servoCapL.setPosition(0.5);
+            servoCapR.setPosition(0.5);
+        } */
 
         if (g2_Dleft) {
             servoCapL.setPower(1);
         }
-
         else if (g2_Dright) {
-            servoCapL.setPower(-.9);
+            servoCapL.setPower(-1);
         }
         else {
             servoCapL.setPower(0);
@@ -233,11 +231,9 @@ public class TeleOpOFFICIAL extends OpMode {
         if (g2_x) {
             servoCapR.setPower(1);
         }
-
         else if (g2_b) {
             servoCapR.setPower(-1);
         }
-
         else {
             servoCapR.setPower(0);
         }
@@ -290,7 +286,7 @@ public class TeleOpOFFICIAL extends OpMode {
 
         time.reset();
 
-        while (time.time() < warmUpMs){
+        while (time.time() < warmUpMs) {
             motorLaunchL.setPower(shootPower/4);
             motorLaunchR.setPower(-shootPower/4);
         }

@@ -75,13 +75,13 @@ public class CloseRedAuto extends LinearOpMode {
         telemetry.addData("init ", "complete");
         waitForStart();
 
-        move(.25, .2125);
+        move(.225, .2125);
         sleep(75);            //warms up motors on the way to beacon
-        move(.5, .425);
+        move(.5, .45);
         sleep(75);
-        move(1, .85);
+        move(1, .895);
         sleep(750);
-        while (colorB.alpha() < 3 && opModeIsActive()) {  //
+        while (colorB.alpha() < 3 && opModeIsActive()) {
             move(.275, .26);
         }
         move(0, 0);

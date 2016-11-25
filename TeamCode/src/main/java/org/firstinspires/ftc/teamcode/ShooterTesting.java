@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,7 +40,7 @@ public class ShooterTesting extends OpMode {
 
 
     int warmUpMs = 88;
-    double shootPower = .75;
+    double shootPower = 0.0;
 
     // Maps the motors and sets them in the correct direction.
     public void init() {
@@ -91,24 +90,31 @@ public class ShooterTesting extends OpMode {
         boolean g1_up = gamepad1.dpad_up;
         boolean g1_down = gamepad1.dpad_down;
 
-        boolean isShooting = false;
-
-
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
 
         if (g1_leftY < -0.1) {
             motorM.setPower(1);
         } else if (g1_leftY > 0.1) {
-            motorM.setPower(-.2);
+            motorM.setPower(-1);
         } else {
             motorM.setPower(0);
         }
 
         if (g1_up) {
-            shootPower += .01;
+            shootPower = Range.clip(shootPower + .01, 0, 1);
+            try {
+                Thread.sleep(50);
+            }
+            catch (Exception e) {
+            }
         }
         if (g1_down) {
-            shootPower -= .01;
+            shootPower = Range.clip(shootPower - .01, 0, 1);
+            try {
+                Thread.sleep(50);
+            }
+            catch (Exception e) {
+            }
         }
 
         motorLaunchL.setPower(shootPower);
@@ -129,7 +135,7 @@ public class ShooterTesting extends OpMode {
         telemetry.addData("shootPower", shootPower);
     }
 
-    public void startShoot(double voltage) {
+    /*public void startShoot(double voltage) {
         double shootPower = -.25 * voltage + 3.75;
         ElapsedTime time = new ElapsedTime();
 
@@ -182,4 +188,5 @@ public class ShooterTesting extends OpMode {
         time.reset();
 
     }
+    */
 }

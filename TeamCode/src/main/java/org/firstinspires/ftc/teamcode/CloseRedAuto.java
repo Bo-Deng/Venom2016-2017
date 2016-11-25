@@ -31,13 +31,13 @@ public class CloseRedAuto extends LinearOpMode {
     CRServo servoCapL;
     CRServo servoCapR;
 
-
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
     IMU imu;
 
     ElapsedTime time;
+    double rRatio = .895;
 
     @Override
     public void runOpMode() throws InterruptedException {

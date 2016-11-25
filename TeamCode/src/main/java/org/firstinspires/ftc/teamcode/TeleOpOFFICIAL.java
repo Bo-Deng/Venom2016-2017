@@ -26,10 +26,13 @@ public class TeleOpOFFICIAL extends OpMode {
     DcMotor motorLift;
 
     Servo servoButtonAuto;
+    Servo servoCapTop;
     CRServo servoButtonL;
     CRServo servoButtonR;
-    CRServo servoCapL;
-    CRServo servoCapR;
+    //CRServo servoCapL;
+    //CRServo servoCapR;
+    Servo servoCapL;
+    Servo servoCapR;
 
     ColorSensor colorF;
     ColorSensor colorB;
@@ -38,9 +41,7 @@ public class TeleOpOFFICIAL extends OpMode {
 
     int warmUpMs = 88;
     double launcherSpeed = 0.0;
-    double leftOffset = 0.0;
     double driveScale = 1.0;
-    boolean isShooting = false;
     ElapsedTime time = new ElapsedTime();
 
     // Maps the motors and sets them in the correct direction.
@@ -56,10 +57,13 @@ public class TeleOpOFFICIAL extends OpMode {
         motorLift = hardwareMap.dcMotor.get("motorLift");
 
         servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
+        servoCapTop = hardwareMap.servo.get("servoCapTop");
         servoButtonL = hardwareMap.crservo.get("servoButtonL");
         servoButtonR = hardwareMap.crservo.get("servoButtonR");
-        servoCapL = hardwareMap.crservo.get("servoCapL");
-        servoCapR = hardwareMap.crservo.get("servoCapR");
+        //servoCapL = hardwareMap.crservo.get("servoCapL");
+        //servoCapR = hardwareMap.crservo.get("servoCapR");
+        servoCapL = hardwareMap.servo.get("servoCapL");
+        servoCapR = hardwareMap.servo.get("servoCapR");
 
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
@@ -76,6 +80,7 @@ public class TeleOpOFFICIAL extends OpMode {
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoButtonAuto.setPosition(.5);
+        servoCapTop.setPosition(1);
     }
 
     @Override
@@ -89,7 +94,6 @@ public class TeleOpOFFICIAL extends OpMode {
         boolean g1_leftBumper = gamepad1.left_bumper;
         boolean g1_rightBumper = gamepad1.right_bumper;
         boolean g1_y = gamepad1.y;
-        boolean g1_x = gamepad1.x;
 
         double g2_leftY = -gamepad2.left_stick_y;
         double g2_rightY = -gamepad2.right_stick_y;
@@ -99,6 +103,8 @@ public class TeleOpOFFICIAL extends OpMode {
         boolean g2_rightBumper = gamepad2.right_bumper;
         boolean g2_Dleft = gamepad2.dpad_left;
         boolean g2_Dright = gamepad2.dpad_right;
+        boolean g2_Dup = gamepad2.dpad_up;
+        boolean g2_Ddown = gamepad2.dpad_down;
         boolean g2_x = gamepad2.x;
         boolean g2_b = gamepad2.b;
         boolean g2_y = gamepad2.y;
@@ -154,14 +160,14 @@ public class TeleOpOFFICIAL extends OpMode {
             motorM.setPower(1);
         }
         else if (g2_leftY > 0.1) {
-            motorM.setPower(-.2);
+            motorM.setPower(-1);
         }
         else {
             motorM.setPower(0);
         }
 
         if (g2_rightTrigger > 0.1) {
-            launcherSpeed = Range.clip(launcherSpeed + .1, 0, 1);
+            launcherSpeed = Range.clip(launcherSpeed + .1, -1, 1);
             try {
                 Thread.sleep(50);
             }
@@ -169,20 +175,34 @@ public class TeleOpOFFICIAL extends OpMode {
             }
         }
         else if (g2_y) {
-            launcherSpeed = -.5;
-            leftOffset = -.3;
-        }
-        else {
-            launcherSpeed = Range.clip(launcherSpeed - .1, 0, 1);
+            launcherSpeed = Range.clip(launcherSpeed - .1, -1, 1);
             try {
                 Thread.sleep(50);
             }
             catch (Exception E){
             }
         }
-        motorLaunchL.setPower(launcherSpeed + leftOffset);
+        else {
+            if (launcherSpeed > 0) {
+                launcherSpeed = Range.clip(launcherSpeed - .1, 0, 1);
+                try {
+                    Thread.sleep(50);
+                } catch (Exception E) {
+                }
+            }
+            else if (launcherSpeed < 0) {
+                launcherSpeed = Range.clip(launcherSpeed + .1, -1, 0);
+                try {
+                    Thread.sleep(50);
+                } catch (Exception E) {
+                }
+            }
+            else {
+                launcherSpeed = 0;
+            }
+        }
+        motorLaunchL.setPower(launcherSpeed);
         motorLaunchR.setPower(-launcherSpeed);
-        leftOffset = 0;
 
 
         if (g1_rightTrigger > 0.1) {
@@ -218,6 +238,7 @@ public class TeleOpOFFICIAL extends OpMode {
             servoCapR.setPosition(0.5);
         } */
 
+        /*
         if (g2_Dleft) {
             servoCapL.setPower(1);
         }
@@ -236,6 +257,35 @@ public class TeleOpOFFICIAL extends OpMode {
         }
         else {
             servoCapR.setPower(0);
+        }
+
+        if (g2_Dup) {
+            servoCapTop.setPosition(1);
+        }
+        else if (g2_Ddown) {
+            servoCapTop.setPosition(0);
+        }
+        */
+
+        if (g2_Dleft) {
+            servoCapL.setPosition(1);
+        }
+        else if (g2_Dright) {
+            servoCapL.setPosition(0);
+        }
+
+        if (g2_x) {
+            servoCapR.setPosition(1);
+        }
+        else if (g2_b) {
+            servoCapR.setPosition(0);
+        }
+
+        if (g2_Dup) {
+            servoCapTop.setPosition(1);
+        }
+        else if (g2_Ddown) {
+            servoCapTop.setPosition(0);
         }
 
         telemetry.addData("driveScale: ", driveScale);

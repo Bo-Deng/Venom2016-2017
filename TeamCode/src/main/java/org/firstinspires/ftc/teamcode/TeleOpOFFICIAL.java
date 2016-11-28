@@ -33,6 +33,7 @@ public class TeleOpOFFICIAL extends OpMode {
     //CRServo servoCapR;
     Servo servoCapL;
     Servo servoCapR;
+    Servo servoLaunch;
 
     ColorSensor colorF;
     ColorSensor colorB;
@@ -64,6 +65,7 @@ public class TeleOpOFFICIAL extends OpMode {
         //servoCapR = hardwareMap.crservo.get("servoCapR");
         servoCapL = hardwareMap.servo.get("servoCapL");
         servoCapR = hardwareMap.servo.get("servoCapR");
+        servoLaunch = hardwareMap.servo.get("servoLaunch");
 
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
@@ -80,7 +82,9 @@ public class TeleOpOFFICIAL extends OpMode {
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoButtonAuto.setPosition(.5);
-        servoCapTop.setPosition(1);
+        servoCapTop.setPosition(0);
+        servoCapL.setPosition(1);
+        servoLaunch.setPosition(.79);
     }
 
     @Override
@@ -168,6 +172,7 @@ public class TeleOpOFFICIAL extends OpMode {
 
         if (g2_rightTrigger > 0.1) {
             launcherSpeed = Range.clip(launcherSpeed + .1, -1, 1);
+            servoLaunchUp();
             try {
                 Thread.sleep(50);
             }
@@ -185,6 +190,7 @@ public class TeleOpOFFICIAL extends OpMode {
         else {
             if (launcherSpeed > 0) {
                 launcherSpeed = Range.clip(launcherSpeed - .1, 0, 1);
+                servoLaunchDown();
                 try {
                     Thread.sleep(50);
                 } catch (Exception E) {
@@ -225,6 +231,12 @@ public class TeleOpOFFICIAL extends OpMode {
             servoButtonR.setPower(0);
         }
 
+        if (g2_leftBumper) {
+            servoLaunch.setPosition(Range.clip(servoLaunch.getPosition() + .01, 0, 1));
+        }
+        else if (g2_rightBumper) {
+            servoLaunch.setPosition(Range.clip(servoLaunch.getPosition() - .01, 0, 1));
+        }
         /*if (g2_rightBumper) {
             servoCapL.setPosition(0);
             servoCapR.setPosition(0);
@@ -284,17 +296,43 @@ public class TeleOpOFFICIAL extends OpMode {
         if (g2_Dup) {
             servoCapTop.setPosition(1);
         }
-        else if (g2_Ddown) {
-            servoCapTop.setPosition(0);
+        else if (g2_Ddown || servoCapTop.getPosition() == 0) {
+            servoCapTop.setPosition(.5);
         }
 
         telemetry.addData("driveScale: ", driveScale);
+
         telemetry.addData("launcherSpeed", launcherSpeed);
         telemetry.addData("beaconBlue: ", colorBeacon.blue());
         telemetry.addData("beaconRed: ", colorBeacon.red());
+        telemetry.addData("servoLaunch: ", servoLaunch.getPosition());
+        telemetry.addData("servoCapL: ", servoCapL.getPosition());
         telemetry.update();
 
     }
+
+    public void servoLaunchUp() {
+        if (servoLaunch.getPosition() > 0.08) {
+            motorM.setPower(0);
+            servoLaunch.setPosition(0.07);
+            try {
+                Thread.sleep(250);
+            } catch (Exception E) {
+            }
+        }
+    }
+
+    public void servoLaunchDown() {
+        if (servoLaunch.getPosition() < .75) {
+            motorM.setPower(0);
+            servoLaunch.setPosition(.79);
+            try {
+                Thread.sleep(250);
+            } catch (Exception E) {
+            }
+        }
+    }
+
 
     public void startShoot() {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();

@@ -27,20 +27,22 @@ public class ShooterTesting extends OpMode {
     DcMotor motorLift;
 
     Servo servoButtonAuto;
+    Servo servoCapTop;
     CRServo servoButtonL;
     CRServo servoButtonR;
-    CRServo servoCapL;
-    CRServo servoCapR;
-
+    //CRServo servoCapL;
+    //CRServo servoCapR;
+    Servo servoCapL;
+    Servo servoCapR;
+    Servo servoLaunch;
 
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
     IMU imu;
 
-
-    int warmUpMs = 88;
     double shootPower = 0.0;
+    ElapsedTime time = new ElapsedTime();
 
     // Maps the motors and sets them in the correct direction.
     public void init() {
@@ -55,10 +57,14 @@ public class ShooterTesting extends OpMode {
         motorLift = hardwareMap.dcMotor.get("motorLift");
 
         servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
+        servoCapTop = hardwareMap.servo.get("servoCapTop");
         servoButtonL = hardwareMap.crservo.get("servoButtonL");
         servoButtonR = hardwareMap.crservo.get("servoButtonR");
-        servoCapL = hardwareMap.crservo.get("servoCapL");
-        servoCapR = hardwareMap.crservo.get("servoCapR");
+        //servoCapL = hardwareMap.crservo.get("servoCapL");
+        //servoCapR = hardwareMap.crservo.get("servoCapR");
+        servoCapL = hardwareMap.servo.get("servoCapL");
+        servoCapR = hardwareMap.servo.get("servoCapR");
+        servoLaunch = hardwareMap.servo.get("servoLaunch");
 
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
@@ -75,7 +81,8 @@ public class ShooterTesting extends OpMode {
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servoButtonAuto.setPosition(.5);
-
+        servoCapTop.setPosition(0);
+        servoCapL.setPosition(1);
     }
 
     public void loop() {

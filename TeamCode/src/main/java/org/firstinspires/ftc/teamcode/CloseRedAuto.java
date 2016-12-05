@@ -26,19 +26,21 @@ public class CloseRedAuto extends LinearOpMode {
     DcMotor motorLift;
 
     Servo servoButtonAuto;
+    Servo servoCapTop;
     CRServo servoButtonL;
     CRServo servoButtonR;
-    CRServo servoCapL;
-    CRServo servoCapR;
+    //CRServo servoCapL;
+    //CRServo servoCapR;
+    Servo servoCapL;
+    Servo servoCapR;
+    Servo servoLaunch;
 
     ColorSensor colorF;
     ColorSensor colorB;
     ColorSensor colorBeacon;
     IMU imu;
-
-    ElapsedTime time;
-    double rRatio = .895;
-
+    double rRatio = .905;
+    //lol get rekt scrub
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -54,8 +56,8 @@ public class CloseRedAuto extends LinearOpMode {
         servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
         servoButtonL = hardwareMap.crservo.get("servoButtonL");
         servoButtonR = hardwareMap.crservo.get("servoButtonR");
-        servoCapL = hardwareMap.crservo.get("servoCapL");
-        servoCapR = hardwareMap.crservo.get("servoCapR");
+        servoCapL = hardwareMap.servo.get("servoCapL");
+        servoCapR = hardwareMap.servo.get("servoCapR");
 
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
@@ -79,7 +81,7 @@ public class CloseRedAuto extends LinearOpMode {
         sleep(75);            //warms up motors on the way to beacon
         move(.5, .45);
         sleep(75);
-        move(1, .895);
+        move(1, .905);
         sleep(750);
         while (colorB.alpha() < 3 && opModeIsActive()) {
             move(.275, .26);

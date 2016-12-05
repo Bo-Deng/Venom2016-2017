@@ -38,24 +38,18 @@ public class DiagnosticTesting extends OpMode {
     ElapsedTime time;
 
     public void init() {
-        motorFL = hardwareMap.dcMotor.get("motorFL");
+
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
         colorB.setI2cAddress(I2cAddr.create8bit(0x42));
         colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
         colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
         colorBeacon.enableLed(false);
-
-        imu = new IMU(hardwareMap.get(BNO055IMU.class, "IMU"));
-        imu.IMUinit(hardwareMap);
-
-        telemetry.addData("colorF is null", colorF == null);
-        telemetry.addData("colorB is null", colorB == null);
-        telemetry.addData("init: ", "finished");
-        time = new ElapsedTime();
     }
 
     public void loop() {

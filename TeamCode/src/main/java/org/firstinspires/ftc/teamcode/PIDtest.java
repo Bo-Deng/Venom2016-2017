@@ -4,39 +4,93 @@ import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "PIDtest", group = "test")
 public class PIDtest extends LinearOpMode {
 
-    DcMotor motorFL;
-    DcMotor motorBL;
     DcMotor motorFR;
+    DcMotor motorFL;
     DcMotor motorBR;
+    DcMotor motorBL;
+    DcMotor motorM;
+    DcMotor motorLaunchL;
+    DcMotor motorLaunchR;
+    DcMotor motorLift;
+
+    Servo servoButtonAuto;
+    Servo servoCapTop;
+    CRServo servoButtonL;
+    CRServo servoButtonR;
+    //CRServo servoCapL;
+    //CRServo servoCapR;
+    Servo servoCapL;
+    Servo servoCapR;
+    Servo servoLaunch;
+
+    ColorSensor colorF;
+    ColorSensor colorB;
+    ColorSensor colorBeacon;
     IMU imu;
+
     ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorBL = hardwareMap.dcMotor.get("motorBL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorM = hardwareMap.dcMotor.get("motorM");
+        motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
+        motorLaunchR = hardwareMap.dcMotor.get("motorLaunchR");
+        motorLaunchL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorLaunchR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorLift = hardwareMap.dcMotor.get("motorLift");
+
+        servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
+        servoCapTop = hardwareMap.servo.get("servoCapTop");
+        servoButtonL = hardwareMap.crservo.get("servoButtonL");
+        servoButtonR = hardwareMap.crservo.get("servoButtonR");
+        //servoCapL = hardwareMap.crservo.get("servoCapL");
+        //servoCapR = hardwareMap.crservo.get("servoCapR");
+        servoCapL = hardwareMap.servo.get("servoCapL");
+        servoCapR = hardwareMap.servo.get("servoCapR");
+        servoLaunch = hardwareMap.servo.get("servoLaunch");
+
+        colorF = hardwareMap.colorSensor.get("colorF");
+        colorB = hardwareMap.colorSensor.get("colorB");
+        colorB.setI2cAddress(I2cAddr.create8bit(0x42));
+        colorBeacon = hardwareMap.colorSensor.get("colorBeacon");
+        colorBeacon.setI2cAddress(I2cAddr.create8bit(0x24));
+        colorBeacon.enableLed(false);
 
         imu = new IMU(hardwareMap.get(BNO055IMU.class, "IMU"));
         imu.IMUinit(hardwareMap);
 
-        telemetry.addData("Init", " completed");
-        DbgLog.error("init complete");
+        //motorLaunchL.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        servoButtonAuto.setPosition(.4);
+        servoCapTop.setPosition(0);
+        servoCapL.setPosition(1);
+        servoLaunch.setPosition(.07);
+
+        telemetry.addData("init", " complete");
+        telemetry.update();
+
         waitForStart();
 
-        Pstraight(.25, 4);
+        Pturn(-45, 5000);
     }
 
     public void setMotors(double leftSpeed, double rightSpeed) {

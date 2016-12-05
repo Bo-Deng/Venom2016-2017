@@ -2,8 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -15,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "ShooterTesting", group = "TeleOp")
-public class ShooterTesting extends OpMode {
+public class ShooterTesting extends LinearOpMode {
 
     DcMotor motorFR;
     DcMotor motorFL;
@@ -45,7 +44,7 @@ public class ShooterTesting extends OpMode {
     ElapsedTime time = new ElapsedTime();
 
     // Maps the motors and sets them in the correct direction.
-    public void init() {
+    public void initStuff() {
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -80,67 +79,71 @@ public class ShooterTesting extends OpMode {
         //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoButtonAuto.setPosition(.5);
+        servoButtonAuto.setPosition(.6);
         servoCapTop.setPosition(0);
         servoCapL.setPosition(1);
+        servoLaunch.setPosition(.07);
     }
 
-    public void loop() {
+    public void runOpMode() throws InterruptedException {
 
-        double g1_leftY = gamepad1.left_stick_y;
-        double g1_rightY = gamepad1.right_stick_y;
+        initStuff();
+        waitForStart();
 
-        boolean g1_leftBumper = gamepad1.left_bumper;
-        boolean g1_rightBumper = gamepad1.right_bumper;
-        boolean g1_x = gamepad1.x;
-        boolean g1_y = gamepad1.y;
-        boolean g1_up = gamepad1.dpad_up;
-        boolean g1_down = gamepad1.dpad_down;
+        while (opModeIsActive()) {
+            double g1_leftY = gamepad1.left_stick_y;
+            double g1_rightY = gamepad1.right_stick_y;
 
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+            boolean g1_leftBumper = gamepad1.left_bumper;
+            boolean g1_rightBumper = gamepad1.right_bumper;
+            boolean g1_x = gamepad1.x;
+            boolean g1_y = gamepad1.y;
+            boolean g1_up = gamepad1.dpad_up;
+            boolean g1_down = gamepad1.dpad_down;
 
-        if (g1_leftY < -0.1) {
-            motorM.setPower(1);
-        } else if (g1_leftY > 0.1) {
-            motorM.setPower(-1);
-        } else {
-            motorM.setPower(0);
+            double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+
+            if (g1_leftY < -0.1) {
+                motorM.setPower(1);
+            } else if (g1_leftY > 0.1) {
+                motorM.setPower(-1);
+            } else {
+                motorM.setPower(0);
+            }
+
+            if (g1_up) {
+                shootPower = Range.clip(shootPower + .01, 0, 1);
+                try {
+                    Thread.sleep(50);
+                } catch (Exception e) {
+                }
+            }
+            if (g1_down) {
+                shootPower = Range.clip(shootPower - .01, 0, 1);
+                try {
+                    Thread.sleep(50);
+                } catch (Exception e) {
+                }
+            }
+
+            motorLaunchL.setPower(shootPower);
+            motorLaunchR.setPower(-shootPower);
+
+            if (g1_x) {
+                motorLaunchL.setPower(0);
+                motorLaunchR.setPower(0);
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception E) {
+                }
+                DbgLog.error("voltage: " + voltage);
+                DbgLog.error("shootPower: " + shootPower);
+            }
+
+            telemetry.addData("voltage", voltage);
+            telemetry.addData("shootPower", shootPower);
+            telemetry.update();
         }
-
-        if (g1_up) {
-            shootPower = Range.clip(shootPower + .01, 0, 1);
-            try {
-                Thread.sleep(50);
-            }
-            catch (Exception e) {
-            }
-        }
-        if (g1_down) {
-            shootPower = Range.clip(shootPower - .01, 0, 1);
-            try {
-                Thread.sleep(50);
-            }
-            catch (Exception e) {
-            }
-        }
-
-        motorLaunchL.setPower(shootPower);
-        motorLaunchR.setPower(shootPower);
-
-        if (g1_x) {
-            motorLaunchL.setPower(0);
-            motorLaunchR.setPower(0);
-            try {
-                Thread.sleep(5000);
-            } catch (Exception E) {
-            }
-            DbgLog.error("voltage: " + voltage);
-            DbgLog.error("shootPower: " + shootPower);
-        }
-
-        telemetry.addData("voltage", voltage);
-        telemetry.addData("shootPower", shootPower);
-    }
 
     /*public void startShoot(double voltage) {
         double shootPower = -.25 * voltage + 3.75;
@@ -196,4 +199,5 @@ public class ShooterTesting extends OpMode {
 
     }
     */
+    }
 }

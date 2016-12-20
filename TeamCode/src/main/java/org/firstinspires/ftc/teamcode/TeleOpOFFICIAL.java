@@ -54,12 +54,26 @@ public class TeleOpOFFICIAL extends LinearOpMode {
     ElapsedTime time = new ElapsedTime();
 
     // Maps the motors and sets them in the correct direction.
-    public void initStuff() {
+    public void initStuff() throws InterruptedException{
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//1113
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//-1149
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//1055
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//1084
+
         motorM = hardwareMap.dcMotor.get("motorM");
         motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
         motorLaunchR = hardwareMap.dcMotor.get("motorLaunchR");
@@ -113,6 +127,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g1_leftBumper = gamepad1.left_bumper;
             boolean g1_rightBumper = gamepad1.right_bumper;
             boolean g1_y = gamepad1.y;
+            boolean g1_b = gamepad1.b;
             boolean g1_Dleft = gamepad1.dpad_left;
             boolean g1_Dright = gamepad1.dpad_right;
             boolean g1_Dup = gamepad1.dpad_up;
@@ -141,18 +156,18 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             if (g1_y) {
                 if (driveScale == 1) {
                     driveScale = 0.5;
-                    try {
-                        wait(350);
-                    } catch (Exception E) {
-                    }
+                    sleep(300);
                 } else if (driveScale == 0.5) {
                     driveScale = 1;
-                    try {
-                        wait(350);
-                    } catch (Exception E) {
-                    }
+                    sleep(300);
                 }
             }
+
+            if (g1_b) {
+                driveScale *= -1;
+                sleep(300);
+            }
+
             if (Math.abs(g1_leftY) > 0.1) {
 
                 motorBL.setPower(-g1_leftY * driveScale);
@@ -172,6 +187,19 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 motorBR.setPower(0);
                 motorFR.setPower(0);
             }
+
+            /*if (g1_Dup) {
+                motorFL.setPower(.35);
+                motorFR.setPower(.35);
+                motorBR.setPower(-.35);
+                motorBL.setPower(-.35);
+            }
+            else {
+                motorFL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
+                motorBL.setPower(0);
+            } */
 
             if (Math.abs(g2_leftY) > 0.1) {
                 motorLift.setPower(-g2_leftY);
@@ -339,6 +367,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 sleep(25);
             } */
             telemetry.addData("driveScale: ", driveScale);
+            telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
             //telemetry.addData("auto; ", servoButtonAuto.getPosition());
             DbgLog.error("voltage: " + voltage);
             DbgLog.error("targetPower: " + targetPower);
@@ -355,7 +384,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             motorM.setPower(-1);
             mDisabled = true;
             servoLaunch.setPosition(.8);
-            sleep(500);
+            sleep(300);
             motorM.setPower(0);
             mDisabled = false;
         }

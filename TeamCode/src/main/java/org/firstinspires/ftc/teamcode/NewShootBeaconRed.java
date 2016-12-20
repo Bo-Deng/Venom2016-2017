@@ -15,8 +15,9 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by Bo on 11/28/2016.
  */
-@Autonomous(name = "ShootOnly", group = "Autonomous")
-public class ShootOnly extends LinearOpMode {
+@Autonomous(name = "NewShootBeaconRed", group = "Autonomous")
+public class NewShootBeaconRed extends LinearOpMode {
+
     DcMotor motorFR;
     DcMotor motorFL;
     DcMotor motorBR;
@@ -41,21 +42,24 @@ public class ShootOnly extends LinearOpMode {
     ColorSensor colorBeacon;
     IMU imu;
 
+    double squaresToEncoder = 1084;
+
     double targetPower = 0.0;
     double shootPower = 0.0;
-    double rRatio = 1;
+    double rRatio = 1;//0.905;
     ElapsedTime time = new ElapsedTime();
 
-    public void initStuff() {
+    public void initStuff() throws InterruptedException {
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        resetEncoders();
         motorM = hardwareMap.dcMotor.get("motorM");
         motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
         motorLaunchR = hardwareMap.dcMotor.get("motorLaunchR");
@@ -87,7 +91,7 @@ public class ShootOnly extends LinearOpMode {
         //motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         //motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoButtonAuto.setPosition(.4);
+        servoButtonAuto.setPosition(.3);
         servoCapTop.setPosition(0);
         servoCapL.setPosition(1);
         servoLaunch.setPosition(.8);
@@ -100,13 +104,10 @@ public class ShootOnly extends LinearOpMode {
         initStuff();
         waitForStart();
         servoCapTop.setPosition(.5);
-        servoLaunch.setPosition(.8);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.68;
-        sleep(5000);
-        moveTime(1200, .5, .5);
-        moveTime(50, .25, .25);
-        moveTime(50, .125, .125);
+        targetPower = -0.144 * voltage + 2.65;
+
+        moveSquares(1, .5);
         while (shootPower < targetPower) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
@@ -119,29 +120,87 @@ public class ShootOnly extends LinearOpMode {
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);
-        moveTime(900, -.5, -.5);
-        /*turn(-38);
-        moveTime(50, .25, .25);
-        moveTime(50, .5, .5);
-        moveTime(300, 1, 1);
-        move(.375, .375);
-        while (colorB.alpha() < 3 && opModeIsActive()) {
+        moveSquares(-.725, .5);
+        PDturn(-42.5, 3000);
+        moveSquares(1.40, .75);
+        move(.2, .2);
+        while (colorB.alpha() < 1 && opModeIsActive()) {
+            DbgLog.error("" + colorB.alpha());
         }
-        move(0, 0);
+        stopMotors();
         DbgLog.error("back sensed white line");
-        sleep(500);
-        move(-.45, .45);
+        sleep(1000);
+        move(-.42, .42);
         while (colorF.alpha() < 3 && opModeIsActive()) {
         }
-        move(0, 0);
+        stopMotors();
         sleep(100);
         move(.275, .275);
-        while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3) {
+        while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3 && opModeIsActive()) {
         }
         move(0, 0);
-        pressBeacon(); */
+        pressBeacon();
+        PDturn(90, 3000);
+        moveSquares(1.85, 1);
+        move(.2, .2);
+        while (colorB.alpha() < 3 && opModeIsActive()) {
+        }
+        stopMotors();
+        DbgLog.error("back sensed white line");
+        sleep(1000);
+        move(-.42, .42);
+        while (colorF.alpha() < 3 && opModeIsActive()) {
+        }
+        stopMotors();
+        sleep(100);
+        move(.275, .275);
+        while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3 && opModeIsActive()) {
+        }
+        stopMotors();
+        pressBeacon();
+        //moveSquares(-1.5, 1);
+        //moveTime(2000, 1, -1);
     }
 
+    public void moveSquares(double squares, double pow) throws InterruptedException {
+        resetEncoders();
+        double encoderVal = squares * squaresToEncoder;
+        if (squares >= 0) {
+            while (motorBL.getCurrentPosition() < encoderVal && opModeIsActive()) {
+                motorBL.setPower(-pow);
+                motorBR.setPower(-pow);
+                motorFL.setPower(pow);
+                motorFR.setPower(pow);
+            }
+        }
+        else if (squares < 0) {
+            while (motorBL.getCurrentPosition() > encoderVal && opModeIsActive()) {
+                motorBL.setPower(pow);
+                motorBR.setPower(pow);
+                motorFL.setPower(-pow);
+                motorFR.setPower(-pow);
+            }
+        }
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+    }
+
+    public void resetEncoders() throws InterruptedException {
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
     public void moveTime(int msTime, double leftSpeed, double rightSpeed) throws InterruptedException{
         if (!opModeIsActive())
             return;
@@ -171,19 +230,67 @@ public class ShootOnly extends LinearOpMode {
         //telemetry.addData("front: ", colorF.alpha());
     }
 
+    public void stopMotors() {
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        DbgLog.error("MOTORS ARE STOPPED PLZ STOP");
+    }
+
+    public void PDturn(double degTurn, int msTime) throws InterruptedException {
+
+        imu.IMUinit(hardwareMap);
+        double kP = 0.055;
+        double kd = 0.0006;
+        double prevError = 0;
+        double currError = 0;
+        double prevtime = time.milliseconds();
+        double currTime = time.milliseconds();
+        double PIDchange;
+        double rightSpeed;
+        double leftSpeed;
+        double angleDiff;
+
+        time.reset();
+        while (time.milliseconds() < msTime && opModeIsActive()) {
+            telemetry.addData("msTime: ", msTime);
+            telemetry.addData("imuYaw: ", imu.getYaw());
+            telemetry.update();
+            angleDiff = degTurn - imu.getYaw();
+            currError = angleDiff;
+            currTime = time.milliseconds();
+            leftSpeed = 0;
+            rightSpeed = 0;
+
+            PIDchange = -angleDiff * kP - (currError - prevError) / (currTime - prevtime);
+            leftSpeed = Range.clip(-(PIDchange / 2), -1, 1);
+            rightSpeed = Range.clip(PIDchange / 2, -1, 1);
+
+            prevError = currError;
+            prevtime = currTime;
+            move(leftSpeed, rightSpeed);
+            DbgLog.error("" + (msTime - time.milliseconds()));
+        }
+        move(0, 0);
+        telemetry.addData("turn", " completed");
+        telemetry.update();
+        sleep(200);
+        DbgLog.error("ANGLE: " + imu.getYaw());
+    }
+
     public void turn(double turnAngle) throws InterruptedException { // -179.9999 to 180 deg
         if (!opModeIsActive())
             return;
 
-        imu.IMUinit(hardwareMap);                                    // negative is clockwise positive is counter
-        if (turnAngle > 0) { //turn left
+        if (turnAngle > 0) { //turn right
             DbgLog.error("turnAngle > 0");
             move(.550, -.550);
             while (imu.getYaw() < turnAngle - 3 && opModeIsActive()) {
             }
             move(0, 0);
         }
-        else if (turnAngle < 0) {  //turn right
+        else if (turnAngle < 0) {  //turn left
             DbgLog.error("turnAngle < 0");
             move(-.550, .550);
             while (imu.getYaw() > turnAngle + 3 && opModeIsActive()) {
@@ -201,19 +308,21 @@ public class ShootOnly extends LinearOpMode {
         DbgLog.error(colorBeacon.red() + "    " + colorBeacon.blue());
         if (colorBeacon.blue() > 3) {
             telemetry.addData("Right:", " is blue");
-            servoButtonAuto.setPosition(.5);
+            servoButtonAuto.setPosition(.15);
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE BLUE");
         }
 
         else if (colorBeacon.red() > 3) {
             telemetry.addData("Right:", " is red");
-            servoButtonAuto.setPosition(.75);
+            servoButtonAuto.setPosition(.45);
             DbgLog.error("RED RED RED RED RED RED");
         }
-        sleep(100);
+        else {
+        }
+        sleep(300);
         moveTime(1200, .6, .6);
         sleep(200);
         //moveTime(1200, -.6, -.6);
-        moveTime(1200, -.6, -.6);
+        moveSquares(-.25, .5);
     }
 }

@@ -12,6 +12,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import java.util.Arrays;
 
 @Autonomous(name = "PIDtest", group = "test")
 public class PIDtest extends LinearOpMode {
@@ -88,16 +91,40 @@ public class PIDtest extends LinearOpMode {
         telemetry.addData("init", " complete");
         telemetry.update();
 
+        double[] turnAngles = new double[5];
         waitForStart();
 
-        Pturn(-45, 5000);
+        for (int i = 0; i < turnAngles.length; i++) {
+            PDturn(-45, 3000);
+            turnAngles[i] = imu.getYaw();
+        }
+
+        double avgTurn = 0.0;
+        double variance = 0.0;
+
+        for (double angle : turnAngles) {
+            avgTurn += angle;
+        }
+        avgTurn /= turnAngles.length;
+
+        for (double angle : turnAngles) {
+            variance += Math.pow(angle - avgTurn, 2);
+        }
+        double stddev = Math.sqrt(variance);
+        DbgLog.error("avgTurn: " + avgTurn);
+        DbgLog.error("std: " + stddev);
     }
 
     public void setMotors(double leftSpeed, double rightSpeed) {
-        motorBL.setPower(leftSpeed);
+        if (!opModeIsActive())
+            return;
+        motorBL.setPower(-leftSpeed);
+        motorBR.setPower(-rightSpeed);
         motorFL.setPower(leftSpeed);
-        motorBR.setPower(rightSpeed);
-        motorBR.setPower(rightSpeed);
+        motorFR.setPower(rightSpeed);
+
+        //telemetry.addData("back: ", colorB.alpha());
+        //telemetry.addData("front: ", colorF.alpha());
     }
 
     public void Pstraight(double speed, int msTime) {
@@ -128,33 +155,44 @@ public class PIDtest extends LinearOpMode {
         setMotors(0, 0);
     }
 
-    public void Pturn(double degTurn, int msTime) {
+    public void PDturn(double degTurn, int msTime) throws InterruptedException {
 
         imu.IMUinit(hardwareMap);
-        double kP = 0.016;
+        double kP = 0.055;  // .075: -48.125 .085: -44.328 .100:
+        double kd = 0.0006;
+        double prevError = 0;
+        double currError = 0;
+        double prevtime = time.milliseconds();
+        double currTime = time.milliseconds();
         double PIDchange;
         double rightSpeed;
         double leftSpeed;
         double angleDiff;
 
         time.reset();
-        while (time.milliseconds() < msTime) {
+        while (time.milliseconds() < msTime && opModeIsActive()) {
+            telemetry.addData("msTime: ", msTime);
+            telemetry.addData("imuYaw: ", imu.getYaw());
+            telemetry.update();
             angleDiff = degTurn - imu.getYaw();
+            currError = angleDiff;
+            currTime = time.milliseconds();
             leftSpeed = 0;
             rightSpeed = 0;
 
-            if (angleDiff < 0) {
-                PIDchange = -angleDiff * kP;
-                leftSpeed = -(PIDchange / 2);
-                rightSpeed = PIDchange / 2;
-            } else if (angleDiff > 0) {
-                PIDchange = angleDiff * kP;
-                leftSpeed = PIDchange / 2;
-                rightSpeed = -(PIDchange / 2);
+            PIDchange = -angleDiff * kP - (currError - prevError) / (currTime - prevtime);
+            leftSpeed = Range.clip(-(PIDchange / 2), -1, 1);
+            rightSpeed = Range.clip(PIDchange / 2, -1, 1);
 
-            }
+            prevError = currError;
+            prevtime = currTime;
             setMotors(leftSpeed, rightSpeed);
+            DbgLog.error("" + (msTime - time.milliseconds()));
         }
         setMotors(0, 0);
+        telemetry.addData("turn", " completed");
+        telemetry.update();
+        sleep(200);
+        DbgLog.error("ANGLE: " + imu.getYaw());
     }
 }

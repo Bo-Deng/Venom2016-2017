@@ -4,6 +4,7 @@ import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,11 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * Created by Bo on 11/28/2016.
- */
-@Autonomous(name = "ShootOnly", group = "Autonomous")
-public class ShootOnly extends LinearOpMode {
+@Autonomous(name = "EncoderTest", group = "Autonomous")
+public class EncoderTest extends LinearOpMode {
     DcMotor motorFR;
     DcMotor motorFL;
     DcMotor motorBR;
@@ -44,14 +42,24 @@ public class ShootOnly extends LinearOpMode {
     double targetPower = 0.0;
     double shootPower = 0.0;
     double rRatio = 1;
+
+    double squaresToEncoder = 1084;
     ElapsedTime time = new ElapsedTime();
 
-    public void initStuff() {
+    public void initStuff() throws InterruptedException{
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -92,6 +100,8 @@ public class ShootOnly extends LinearOpMode {
         servoCapL.setPosition(1);
         servoLaunch.setPosition(.8);
 
+        double squaresToEncoder = 0.0;
+
         telemetry.addData("init", " complete");
         telemetry.update();
     }
@@ -101,47 +111,43 @@ public class ShootOnly extends LinearOpMode {
         waitForStart();
         servoCapTop.setPosition(.5);
         servoLaunch.setPosition(.8);
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.68;
-        sleep(5000);
-        moveTime(1200, .5, .5);
-        moveTime(50, .25, .25);
-        moveTime(50, .125, .125);
-        while (shootPower < targetPower) {
-            shootPower = Range.clip(shootPower + .1, 0, targetPower);
-            motorLaunchL.setPower(shootPower);
-            motorLaunchR.setPower(-shootPower);
-            sleep(50);
-            //warm up launcher
-        }
-        motorM.setPower(1);
-        sleep(2500);
-        motorM.setPower(0);
-        motorLaunchL.setPower(0);
-        motorLaunchR.setPower(0);
-        moveTime(900, -.5, -.5);
-        /*turn(-38);
-        moveTime(50, .25, .25);
-        moveTime(50, .5, .5);
-        moveTime(300, 1, 1);
-        move(.375, .375);
-        while (colorB.alpha() < 3 && opModeIsActive()) {
-        }
-        move(0, 0);
-        DbgLog.error("back sensed white line");
-        sleep(500);
-        move(-.45, .45);
-        while (colorF.alpha() < 3 && opModeIsActive()) {
-        }
-        move(0, 0);
-        sleep(100);
-        move(.275, .275);
-        while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3) {
-        }
-        move(0, 0);
-        pressBeacon(); */
+        moveSquares(2, .5);
+        //fluffybunny
+    /*turn(-38);
+    moveTime(50, .25, .25);
+    moveTime(50, .5, .5);
+    moveTime(300, 1, 1);
+    move(.375, .375);
+    while (colorB.alpha() < 3 && opModeIsActive()) {
+    }
+    move(0, 0);
+    DbgLog.error("back sensed white line");
+    sleep(500);
+    move(-.45, .45);
+    while (colorF.alpha() < 3 && opModeIsActive()) {
+    }
+    move(0, 0);
+    sleep(100);
+    move(.275, .275);
+    while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3) {
+    }
+    move(0, 0);
+    pressBeacon(); */
     }
 
+    public void moveSquares(double squares, double pow) {
+        double encoderVal = squares * squaresToEncoder;
+        while (motorBL.getCurrentPosition() < encoderVal && opModeIsActive()) {
+            motorBL.setPower(-pow);
+            motorBR.setPower(-pow);
+            motorFL.setPower(pow);
+            motorFR.setPower(pow);
+        }
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+    }
     public void moveTime(int msTime, double leftSpeed, double rightSpeed) throws InterruptedException{
         if (!opModeIsActive())
             return;
@@ -170,6 +176,7 @@ public class ShootOnly extends LinearOpMode {
         //telemetry.addData("back: ", colorB.alpha());
         //telemetry.addData("front: ", colorF.alpha());
     }
+
 
     public void turn(double turnAngle) throws InterruptedException { // -179.9999 to 180 deg
         if (!opModeIsActive())

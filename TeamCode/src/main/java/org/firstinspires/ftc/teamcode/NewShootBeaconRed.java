@@ -123,37 +123,37 @@ public class NewShootBeaconRed extends LinearOpMode {
         moveSquares(-.725, .5);
         PDturn(-42.5, 3000);
         moveSquares(1.40, .75);
-        move(.2, .2);
+        move(.160, .160);
         while (colorB.alpha() < 1 && opModeIsActive()) {
-            DbgLog.error("" + colorB.alpha());
         }
         stopMotors();
         DbgLog.error("back sensed white line");
-        sleep(1000);
-        move(-.42, .42);
-        while (colorF.alpha() < 3 && opModeIsActive()) {
+        sleep(200);
+        move(-.36, .36);
+        while (colorF.alpha() < 2 && opModeIsActive()) {
         }
         stopMotors();
         sleep(100);
-        move(.275, .275);
+        move(.2, .2);
         while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3 && opModeIsActive()) {
         }
         move(0, 0);
         pressBeacon();
         PDturn(90, 3000);
-        moveSquares(1.85, 1);
-        move(.2, .2);
-        while (colorB.alpha() < 3 && opModeIsActive()) {
+        moveSquares(1.25, 1);
+        sleep(100);
+        move(.160, .160);
+        while (colorB.alpha() < 1 && opModeIsActive()) {
         }
         stopMotors();
         DbgLog.error("back sensed white line");
-        sleep(1000);
-        move(-.42, .42);
-        while (colorF.alpha() < 3 && opModeIsActive()) {
+        sleep(200);
+        move(-.385, .385);
+        while (colorF.alpha() < 2 && opModeIsActive()) {
         }
         stopMotors();
         sleep(100);
-        move(.275, .275);
+        move(.2, .2);
         while (colorBeacon.blue() <= 3 && colorBeacon.red() <= 3 && opModeIsActive()) {
         }
         stopMotors();
@@ -195,6 +195,7 @@ public class NewShootBeaconRed extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         idle();
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
 
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -275,7 +276,7 @@ public class NewShootBeaconRed extends LinearOpMode {
         move(0, 0);
         telemetry.addData("turn", " completed");
         telemetry.update();
-        sleep(200);
+        sleep(500);
         DbgLog.error("ANGLE: " + imu.getYaw());
     }
 
@@ -310,19 +311,18 @@ public class NewShootBeaconRed extends LinearOpMode {
             telemetry.addData("Right:", " is blue");
             servoButtonAuto.setPosition(.15);
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE BLUE");
+            sleep(300);
         }
 
         else if (colorBeacon.red() > 3) {
             telemetry.addData("Right:", " is red");
-            servoButtonAuto.setPosition(.45);
+            servoButtonAuto.setPosition(.48);
             DbgLog.error("RED RED RED RED RED RED");
+            sleep(300);
         }
-        else {
-        }
-        sleep(300);
         moveTime(1200, .6, .6);
         sleep(200);
         //moveTime(1200, -.6, -.6);
-        moveSquares(-.25, .5);
+        moveSquares(-.29, .5);
     }
 }

@@ -217,7 +217,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } else {
                 motorM.setPower(0);
             }
-
+            //hacked
             if (g2_rightTrigger > 0.1) {
                 launcherSpeed = Range.clip(launcherSpeed + .1, -1, targetPower);
                 if (launcherSpeed > .6)
@@ -373,7 +373,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             DbgLog.error("targetPower: " + targetPower);
             //telemetry.addData("servoLaunch: ", servoLaunch.getPosition());
             //telemetry.addData("top: ", servoCapTop.getPosition());
-            //telemetry.addData("Beacon: ", colorBeacon.red() + "              " + colorBeacon.blue());
+            telemetry.addData("Beacon: ", colorBeacon.red() + "              " + colorBeacon.blue());
             telemetry.update();
         }
 

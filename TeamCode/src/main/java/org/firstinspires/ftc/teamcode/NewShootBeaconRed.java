@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Created by Bo on 11/28/2016.
+ * Created by Navya on 11/28/2016.
  */
 @Autonomous(name = "NewShootBeaconRed", group = "Autonomous")
 public class NewShootBeaconRed extends LinearOpMode {

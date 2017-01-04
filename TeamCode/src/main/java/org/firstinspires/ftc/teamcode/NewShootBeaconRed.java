@@ -130,7 +130,7 @@ public class NewShootBeaconRed extends LinearOpMode {
         DbgLog.error("back sensed white line");
         sleep(200);
         move(-.36, .36);
-        while (colorF.alpha() < 2 && opModeIsActive()) {
+        while (colorF.alpha() < 3 && opModeIsActive()) {
         }
         stopMotors();
         sleep(100);
@@ -139,17 +139,17 @@ public class NewShootBeaconRed extends LinearOpMode {
         }
         move(0, 0);
         pressBeacon();
-        PDturn(90, 3000);
+        PDturn(0, 3000);
         moveSquares(1.25, 1);
         sleep(100);
-        move(.160, .160);
+        move(.162, .162);
         while (colorB.alpha() < 1 && opModeIsActive()) {
         }
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(200);
-        move(-.385, .385);
-        while (colorF.alpha() < 2 && opModeIsActive()) {
+        move(-.38, .38);
+        while (colorF.alpha() < 6 && opModeIsActive()) {
         }
         stopMotors();
         sleep(100);
@@ -241,7 +241,6 @@ public class NewShootBeaconRed extends LinearOpMode {
 
     public void PDturn(double degTurn, int msTime) throws InterruptedException {
 
-        imu.IMUinit(hardwareMap);
         double kP = 0.055;
         double kd = 0.0006;
         double prevError = 0;

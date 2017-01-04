@@ -45,6 +45,8 @@ public class ShootBeaconBlue extends LinearOpMode {
     double targetPower = 0.0;
     double shootPower = 0.0;
     double rRatio = 1;//0.905;
+
+
     ElapsedTime time = new ElapsedTime();
 
     public void initStuff() {

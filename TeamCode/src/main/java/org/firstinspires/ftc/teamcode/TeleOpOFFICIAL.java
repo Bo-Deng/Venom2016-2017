@@ -222,30 +222,18 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 launcherSpeed = Range.clip(launcherSpeed + .1, -1, targetPower);
                 if (launcherSpeed > .6)
                     servoLaunchUp();
-                try {
-                    Thread.sleep(50);
-                } catch (Exception E) {
-                }
+                sleep(50);
             } else if (g2_y) {
                 launcherSpeed = Range.clip(launcherSpeed - .1, -1, 1);
-                try {
-                    Thread.sleep(50);
-                } catch (Exception E) {
-                }
+                sleep(50);
             } else {
                 if (launcherSpeed > 0) {
                     launcherSpeed = Range.clip(launcherSpeed - .05, 0, 1);
                     servoLaunchDown();
-                    try {
-                        Thread.sleep(50);
-                    } catch (Exception E) {
-                    }
+                    sleep(50);
                 } else if (launcherSpeed < 0) {
                     launcherSpeed = Range.clip(launcherSpeed + .05, -1, 0);
-                    try {
-                        Thread.sleep(50);
-                    } catch (Exception E) {
-                    }
+                    sleep(50);
                 } else {
                     launcherSpeed = 0;
                 }

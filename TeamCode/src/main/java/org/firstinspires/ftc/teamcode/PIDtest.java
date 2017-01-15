@@ -47,7 +47,6 @@ public class PIDtest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");

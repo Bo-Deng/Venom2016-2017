@@ -201,12 +201,18 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 motorBL.setPower(0);
             } */
 
-            if (Math.abs(g2_leftY) > 0.1) {
-                motorLift.setPower(-g2_leftY);
+            if (g2_leftY > 0.1) {
+                motorLift.setPower(-g2_leftY / 3);
                 readVolt = false;
-            } else {
+            }
+            else if (g2_leftY < 0.1) {
+                motorLift.setPower(g2_leftY);
+                readVolt = false;
+            }
+            else {
                 motorLift.setPower(0);
             }
+
 
             if (g2_rightY < -0.1 && !mDisabled) {
                 motorM.setPower(1);
@@ -356,6 +362,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } */
             telemetry.addData("driveScale: ", driveScale);
             telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
+            telemetry.addData("colorB: ", colorB.alpha());
+            telemetry.addData("colorF: ", colorF.alpha());
             //telemetry.addData("auto; ", servoButtonAuto.getPosition());
             DbgLog.error("voltage: " + voltage);
             DbgLog.error("targetPower: " + targetPower);
@@ -389,63 +397,6 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             }
             mDisabled = false;
         }
-    }
-
-
-    public void startShoot() {
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        double shootPower = -.25 * voltage + 3.75;
-        ElapsedTime time = new ElapsedTime();
-
-        while (time.time() < warmUpMs){
-            motorLaunchL.setPower(shootPower/4);
-            motorLaunchR.setPower(-shootPower/4);
-        }
-
-        time.reset();
-
-        while (time.time() < warmUpMs){
-            motorLaunchL.setPower(shootPower/2);
-            motorLaunchR.setPower(-shootPower/2);
-        }
-
-        time.reset();
-
-        while (time.time() < warmUpMs){
-            motorLaunchL.setPower(shootPower);
-            motorLaunchR.setPower(-shootPower);
-        }
-
-        time.reset();
-
-    }
-
-    public void endShoot() {
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        double shootPower = -.25 * voltage + 3.9;
-        ElapsedTime time = new ElapsedTime();
-
-        while (time.time() < warmUpMs){
-            motorLaunchL.setPower(shootPower/2);
-            motorLaunchR.setPower(-shootPower/2);
-        }
-
-        time.reset();
-
-        while (time.time() < warmUpMs) {
-            motorLaunchL.setPower(shootPower/4);
-            motorLaunchR.setPower(-shootPower/4);
-        }
-
-        time.reset();
-
-        while (time.time() < warmUpMs){
-            motorLaunchL.setPower(0);
-            motorLaunchR.setPower(0);
-        }
-
-        time.reset();
-
     }
 
     public void sleep(int ms) {

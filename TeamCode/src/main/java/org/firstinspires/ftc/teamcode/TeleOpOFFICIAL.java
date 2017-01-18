@@ -28,6 +28,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
     Servo servoButtonAuto;
     Servo servoCapTop;
+    Servo servoB;
+    CRServo servoSweep;
     CRServo servoButtonL;
     CRServo servoButtonR;
     //CRServo servoCapL;
@@ -88,6 +90,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         servoCapL = hardwareMap.servo.get("servoCapL");
         servoCapR = hardwareMap.servo.get("servoCapR");
         servoLaunch = hardwareMap.servo.get("servoLaunch");
+        servoB = hardwareMap.servo.get("servoB");
+        servoSweep = hardwareMap.crservo.get("servoSweep");
 
         colorF = hardwareMap.colorSensor.get("colorF");
         colorB = hardwareMap.colorSensor.get("colorB");
@@ -109,6 +113,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         servoCapLPos = 1;
         servoCapRPos = 0;
         servoLaunch.setPosition(.15);
+        servoB.setPosition(0.5);
 
         telemetry.addData("init", " complete");
         telemetry.update();
@@ -136,6 +141,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             double g2_leftY = -gamepad2.left_stick_y;
             double g2_rightY = -gamepad2.right_stick_y;
             double g2_rightTrigger = gamepad2.right_trigger;
+            double g2_leftTrigger = gamepad2.left_trigger;
 
             boolean g2_leftBumper = gamepad2.left_bumper;
             boolean g2_rightBumper = gamepad2.right_bumper;
@@ -145,8 +151,11 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g2_Ddown = gamepad2.dpad_down;
             boolean g2_x = gamepad2.x;
             boolean g2_b = gamepad2.b;
+            boolean g2_a = gamepad2.a;
             boolean g2_y = gamepad2.y;
 
+            //readVolt only reads voltage when motors are stopped,
+            //because running motors gives inaccurate voltage
             if (readVolt)
                 voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
 
@@ -202,11 +211,11 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } */
 
             if (g2_leftY > 0.1) {
-                motorLift.setPower(-g2_leftY / 3);
+                motorLift.setPower(-g2_leftY);
                 readVolt = false;
             }
-            else if (g2_leftY < 0.1) {
-                motorLift.setPower(g2_leftY);
+            else if (g2_leftY < -0.1) {
+                motorLift.setPower(-g2_leftY / 5);
                 readVolt = false;
             }
             else {
@@ -223,21 +232,21 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } else {
                 motorM.setPower(0);
             }
-            //hacked
-            if (g2_rightTrigger > 0.1) {
+
+            if (g2_rightTrigger > 0.1) { //accelerates motors by .05 if nothing is pressed
                 launcherSpeed = Range.clip(launcherSpeed + .1, -1, targetPower);
                 if (launcherSpeed > .6)
                     servoLaunchUp();
                 sleep(50);
-            } else if (g2_y) {
+            } else if (g2_y) { //launcher can go backwards in emergency situations
                 launcherSpeed = Range.clip(launcherSpeed - .1, -1, 1);
                 sleep(50);
             } else {
-                if (launcherSpeed > 0) {
+                if (launcherSpeed > 0) { //reduces speed by .05 if nothing is pressed
                     launcherSpeed = Range.clip(launcherSpeed - .05, 0, 1);
                     servoLaunchDown();
                     sleep(50);
-                } else if (launcherSpeed < 0) {
+                } else if (launcherSpeed < 0) { //if launcher was going backwards, slow to 0
                     launcherSpeed = Range.clip(launcherSpeed + .05, -1, 0);
                     sleep(50);
                 } else {
@@ -284,6 +293,12 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 servoCapR.setPosition(0);
                 servoCapRPos = 0;
             }
+
+            if (g2_leftTrigger > .1)
+                sweepDown();
+            else
+                sweepUp();
+
 
     /*
     if (g2_Dleft) {
@@ -399,6 +414,21 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         }
     }
 
+    public void sweepDown() {
+        if (servoB.getPosition() > .3) {
+            servoB.setPosition(.24);
+            sleep(200);
+        }
+        servoSweep.setPower(1);
+    }
+
+    public void sweepUp() {
+        servoSweep.setPower(0);
+        if (servoB.getPosition() < .4) {
+            servoB.setPosition(.5);
+            sleep(200);
+        }
+    }
     public void sleep(int ms) {
         try {
             Thread.sleep(ms);

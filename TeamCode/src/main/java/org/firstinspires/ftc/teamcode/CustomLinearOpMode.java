@@ -27,6 +27,8 @@ public class CustomLinearOpMode extends LinearOpMode {
 
     Servo servoButtonAuto;
     Servo servoCapTop;
+    Servo servoB;
+    CRServo servoSweep;
     CRServo servoButtonL;
     CRServo servoButtonR;
     //CRServo servoCapL;
@@ -74,6 +76,8 @@ public class CustomLinearOpMode extends LinearOpMode {
         servoCapL = map.servo.get("servoCapL");
         servoCapR = map.servo.get("servoCapR");
         servoLaunch = map.servo.get("servoLaunch");
+        servoB = hardwareMap.servo.get("servoB");
+        servoSweep = hardwareMap.crservo.get("servoSweep");
 
         colorF = map.colorSensor.get("colorF");
         colorB = map.colorSensor.get("colorB");
@@ -93,6 +97,7 @@ public class CustomLinearOpMode extends LinearOpMode {
         servoCapTop.setPosition(0);
         servoCapL.setPosition(1);
         servoLaunch.setPosition(.8);
+        servoB.setPosition(0);
 
         double voltage = map.voltageSensor.get("Motor Controller 2").getVoltage();
         //motorMultiplier = voltage

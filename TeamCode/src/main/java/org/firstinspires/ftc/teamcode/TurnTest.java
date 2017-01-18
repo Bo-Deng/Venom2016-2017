@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name = "NewShootBeaconBlue", group = "Autonomous")
-public class NewShootBeaconBlue extends AutoTemplate {
+@Autonomous(name = "TurnTest", group = "Autonomous")
+public class TurnTest extends AutoTemplate {
 
 
     double targetPower = 0.0;
@@ -28,69 +28,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.65;
 
-        moveSquares(1, .5);
-        while (shootPower < targetPower) {
-            shootPower = Range.clip(shootPower + .1, 0, targetPower);
-            motorLaunchL.setPower(shootPower);
-            motorLaunchR.setPower(-shootPower);
-            sleep(50);
-            //warm up launcher
-        }
-        motorM.setPower(1);
-        //wait 2.5 sec to launch particles
-        sleep(2500);
-        motorM.setPower(0);
-        motorLaunchL.setPower(0);
-        motorLaunchR.setPower(0);
-
-        moveSquares(-.725, .5);
-        PDturn(48, 2850);
-        moveSquares(1.55, 1);
-        stopMotors();
-        sleep(125);
-        moveToLine(.148, .148);
-        stopMotors();
-        DbgLog.error("back sensed white line");
-        sleep(200);
-        alignLineBlue(.396, -.406);
-        sleep(100);
-        move(.20, .20);
-
-        time.reset();
-        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3
-                && opModeIsActive() && time.milliseconds() <= 1500) {
-        }
-        //if robot fails to find beacon, scoot back and turn the other
-        //way to look for it
-        if (time.milliseconds() > 1500) {
-            moveSquares(-.1, .5);
-            while (colorF.alpha() < 3) {
-                move(-.400, .400);
-            }
-        }
-        move(0, 0);
-        pressBeaconBlue();
-        PDturn(0, 2600);
-
-        moveSquares(1.35, 1);
-        stopMotors();
-        sleep(150);
-        moveToLine(.142, .142);
-        stopMotors();
-        DbgLog.error("back sensed white line");
-        sleep(200);
-        alignLineBlue(.398, -.430); //hackedd
-        stopMotors();
-
-        sleep(100);
-        move(.218, .218);
-        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive()) {
-        }
-        stopMotors();
-        pressBeaconBlue();
-
-        //moveSquares(-1.5, 1);
-        //moveTime(2000, 1, -1);
+        gyroTurn(TURN_SPEED, -45.0);
     }
 
     /*public void moveSquares(double squares, double pow) throws InterruptedException {

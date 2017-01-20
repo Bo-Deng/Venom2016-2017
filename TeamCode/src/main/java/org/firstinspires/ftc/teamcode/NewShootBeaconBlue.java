@@ -48,7 +48,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         moveSquares(1.55, 1);
         stopMotors();
         sleep(125);
-        moveToLine(.148, .148);
+        moveToLineNew(.148, .148);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(200);
@@ -75,7 +75,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         moveSquares(1.35, 1);
         stopMotors();
         sleep(150);
-        moveToLine(.142, .142);
+        moveToLineNew(.142, .142);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(200);

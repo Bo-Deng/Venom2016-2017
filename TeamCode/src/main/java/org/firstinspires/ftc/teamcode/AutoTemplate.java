@@ -53,6 +53,56 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
+    public void moveToLineNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        time.reset();
+        double speedIncrease = 0;
+        double prevEncoder = motorBL.getCurrentPosition();
+        double prevTime = time.seconds();
+        while (colorB.alpha() < 1 && opModeIsActive()) { //move until line is detected
+            DbgLog.error("" + prevEncoder);
+            move(leftSpeed + speedIncrease, rightSpeed + speedIncrease);
+            if (motorBL.getCurrentPosition() > prevEncoder) { //check every 100 cycles for change in encoder values
+                double encPerSec = (motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
+                DbgLog.error("encPerSec: " + encPerSec);
+                if (encPerSec < 50) {
+                    speedIncrease += .002;
+                    DbgLog.error("speed increased");
+                }
+                else if (encPerSec > 100) {
+                    speedIncrease -= .002;
+                    DbgLog.error("speed decreased");
+                }
+                prevEncoder = motorBL.getCurrentPosition();
+                prevTime = time.seconds();
+            }
+        }
+        stopMotors();
+    }
+
+    public void alignLineBlueNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        //turns right
+        double speedIncrease = 0;
+        double prevEncoder = motorBL.getCurrentPosition();
+        double prevTime = time.seconds();
+        while (colorF.alpha() < 3 && opModeIsActive()) {
+            DbgLog.error("turn: " + prevEncoder);
+            move(leftSpeed + speedIncrease, rightSpeed - speedIncrease);
+            if (motorBL.getCurrentPosition() > prevEncoder) { //check every 100 cycles for change in encoder values
+                double encPerSec = (motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
+                DbgLog.error("encPerSec: " + encPerSec);
+                if (encPerSec < 50) {
+                    speedIncrease += .002;
+                    DbgLog.error("speed increased");
+                }
+                else if (encPerSec > 100) {
+                    speedIncrease -= .002;
+                    DbgLog.error("speed decreased");
+                }
+            }
+        }
+        stopMotors();
+    }
+
     public void alignLineBlue(double leftSpeed, double rightSpeed) throws InterruptedException {
         //turns right
         double speedIncrease = 0;
@@ -70,6 +120,32 @@ public class AutoTemplate extends CustomLinearOpMode {
                 prevEncoder = motorBL.getCurrentPosition();
             }
             i++;
+        }
+        stopMotors();
+    }
+
+    public void alignLineRedNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        //turns right
+        double speedIncrease = 0;
+        double prevEncoder = motorBL.getCurrentPosition();
+        double prevTime = time.seconds();
+        while (colorF.alpha() < 3 && opModeIsActive()) {
+            DbgLog.error("turn: " + prevEncoder);
+            move(leftSpeed + speedIncrease, rightSpeed - speedIncrease);
+            if (motorBL.getCurrentPosition() < prevEncoder) { //check every 100 cycles for change in encoder values
+                double encPerSec = (motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
+                DbgLog.error("encPerSec: " + encPerSec);
+                if (encPerSec < 50) {
+                    speedIncrease += .002;
+                    DbgLog.error("speed increased");
+                }
+                else if (encPerSec > 100) {
+                    speedIncrease -= .002;
+                    DbgLog.error("speed decreased");
+                }
+                prevEncoder = motorBL.getCurrentPosition();
+                prevTime = time.seconds();
+            }
         }
         stopMotors();
     }
@@ -246,8 +322,6 @@ public class AutoTemplate extends CustomLinearOpMode {
 
         // calculate error in -179 to +180 range  (
         robotError = targetAngle - imu.getYaw();
-        while (robotError > 180)  robotError -= 360;
-        while (robotError <= -180) robotError += 360;
         return robotError;
     }
 

@@ -97,7 +97,7 @@ public class CustomLinearOpMode extends LinearOpMode {
         servoCapTop.setPosition(0);
         servoCapL.setPosition(1);
         servoLaunch.setPosition(.8);
-        servoB.setPosition(0);
+        servoB.setPosition(0.5);
 
         double voltage = map.voltageSensor.get("Motor Controller 2").getVoltage();
         //motorMultiplier = voltage
@@ -147,7 +147,6 @@ public class CustomLinearOpMode extends LinearOpMode {
             Thread.sleep(ms);
         }
         catch (Exception E) {
-
         }
     }
 

@@ -27,6 +27,7 @@ public class ShootOnly extends AutoTemplate {
         waitForStart();
         servoCapTop.setPosition(.5);
         servoLaunch.setPosition(.8);
+        servoB.setPosition(0.5);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.65;
         sleep(5000);

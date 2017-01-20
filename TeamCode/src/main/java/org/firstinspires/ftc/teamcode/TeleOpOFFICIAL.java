@@ -51,12 +51,14 @@ public class TeleOpOFFICIAL extends LinearOpMode {
     int warmUpMs = 88;
     double launcherSpeed = 0.0;
     double driveScale = 1.0;
+    double sweepDown = .24;
+    double sweepUp = .5;
     boolean mDisabled = false;
     boolean readVolt = true;
     ElapsedTime time = new ElapsedTime();
 
     // Maps the motors and sets them in the correct direction.
-    public void initStuff() throws InterruptedException{
+    public void initStuff() throws InterruptedException {
 
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -119,7 +121,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         telemetry.update();
     }
 
-    public void runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
         initStuff();
         waitForStart();
         while (opModeIsActive()){
@@ -133,6 +135,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g1_rightBumper = gamepad1.right_bumper;
             boolean g1_y = gamepad1.y;
             boolean g1_b = gamepad1.b;
+            boolean g1_x = gamepad1.x;
             boolean g1_Dleft = gamepad1.dpad_left;
             boolean g1_Dright = gamepad1.dpad_right;
             boolean g1_Dup = gamepad1.dpad_up;
@@ -153,6 +156,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g2_b = gamepad2.b;
             boolean g2_a = gamepad2.a;
             boolean g2_y = gamepad2.y;
+            boolean g2_back = gamepad2.back;
 
             //readVolt only reads voltage when motors are stopped,
             //because running motors gives inaccurate voltage
@@ -238,7 +242,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 if (launcherSpeed > .6)
                     servoLaunchUp();
                 sleep(50);
-            } else if (g2_y) { //launcher can go backwards in emergency situations
+            } else if (g2_back) { //launcher can go backwards in emergency situations
                 launcherSpeed = Range.clip(launcherSpeed - .1, -1, 1);
                 sleep(50);
             } else {
@@ -299,6 +303,20 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             else
                 sweepUp();
 
+            if (g2_a) {
+                sweepDown = Range.clip(sweepDown - .01, 0, .74);
+                sweepUp = Range.clip(sweepUp - .01, .26, 1);
+                sleep(100);
+            }
+            else if (g2_y) {
+                sweepDown = Range.clip(sweepDown + .01, 0, .74);
+                sweepUp = Range.clip(sweepUp + .01, .26, 1);
+                sleep(100);
+            }
+            else if (g1_x) {
+                sweepDown = .24;
+                sweepUp = .5;
+            }
 
     /*
     if (g2_Dleft) {
@@ -379,6 +397,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
             telemetry.addData("colorB: ", colorB.alpha());
             telemetry.addData("colorF: ", colorF.alpha());
+            telemetry.addData("sweepDown: ", sweepDown);
+            telemetry.addData("sweepUp: ", sweepUp);
             //telemetry.addData("auto; ", servoButtonAuto.getPosition());
             DbgLog.error("voltage: " + voltage);
             DbgLog.error("targetPower: " + targetPower);
@@ -387,7 +407,6 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             telemetry.addData("Beacon: ", colorBeacon.red() + "              " + colorBeacon.blue());
             telemetry.update();
         }
-
     }
 
     public void servoLaunchUp() {
@@ -415,8 +434,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
     }
 
     public void sweepDown() {
-        if (servoB.getPosition() > .3) {
-            servoB.setPosition(.24);
+        if (servoB.getPosition() > sweepDown + .1) {
+            servoB.setPosition(sweepDown);
             sleep(200);
         }
         servoSweep.setPower(1);
@@ -424,8 +443,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
     public void sweepUp() {
         servoSweep.setPower(0);
-        if (servoB.getPosition() < .4) {
-            servoB.setPosition(.5);
+        if (servoB.getPosition() < sweepUp - .1) {
+            servoB.setPosition(sweepUp);
             sleep(200);
         }
     }

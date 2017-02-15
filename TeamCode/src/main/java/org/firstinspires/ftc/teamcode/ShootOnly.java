@@ -25,13 +25,14 @@ public class ShootOnly extends AutoTemplate {
     public void runOpMode() throws InterruptedException {
         initStuff(hardwareMap);
         waitForStart();
+        time.reset();
         servoCapTop.setPosition(.5);
         servoLaunch.setPosition(.8);
         servoB.setPosition(0.5);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.65;
         sleep(5000);
-        moveSquares(1.12, .5);
+        moveSquares(1.13, .5);
         while (shootPower < targetPower) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
@@ -44,7 +45,11 @@ public class ShootOnly extends AutoTemplate {
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);
-        moveTime(900, -.5, -.5);
+        while (time.seconds() < 25 && opModeIsActive()) {
+
+        }
+        moveSquares(1, .75);
+        stopMotors();
         /*turn(-38);
         moveTime(50, .25, .25);
         moveTime(50, .5, .5);

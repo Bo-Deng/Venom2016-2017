@@ -25,7 +25,7 @@ public class NewShootBeaconRed extends AutoTemplate {
     public void runOpMode() throws InterruptedException {
         initStuff(hardwareMap);
         waitForStart();
-        servoCapTop.setPosition(.5);
+        servoCapTop.setPosition(.7);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.65;
 
@@ -38,48 +38,66 @@ public class NewShootBeaconRed extends AutoTemplate {
             //warm up launcher
         }
         motorM.setPower(1);
+        //wait 2.5 sec to launch particles
         sleep(2500);
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);
-        moveSquares(-.725, .5);
-        PDturn(-42.5, 3000);
-        moveSquares(1.55, 1);
+
+        moveSquares(-.7, .5);
+        PDturnTest(-43.5, 1900);
+        Pstraight(-43.5, 1, 1.48);
         stopMotors();
         sleep(125);
-        moveToLineNew(.155, .155);
+        moveToLineFront(.195, .195);
         stopMotors();
         DbgLog.error("back sensed white line");
-        sleep(200);
-        alignLineRed(-.38, .38);
-        stopMotors();
         sleep(100);
-        move(.2, .2);
+        alignLineRedBack(-.001, .405);
+        sleep(100);
+        //align the front once again
+        alignLineRedFront(-.395, .395);
+        move(.235, .235);
         time.reset();
-        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive() && time.milliseconds() < 2500) {
+        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3
+                && opModeIsActive() && time.milliseconds() <= 1500) {
         }
-        if (time.milliseconds() > 2500) {
+        /*//if robot fails to find beacon, scoot back and turn the other
+        //way to look for it
+        if (time.milliseconds() > 1500) {
             moveSquares(-.1, .5);
             while (colorF.alpha() < 3) {
-                move(.400, -.400);
+                move(-.400, .400);
+                I hate my life!!!
             }
-        }
+        } */
         move(0, 0);
         pressBeaconRed();
-        PDturn(0, 2800);
-        moveSquares(1.25, 1);
+        if (Math.abs(imu.getYaw()) < 1) {
+            moveSquares(-2, .5);
+            stop();
+        }
+        /*
+        PDturnTest(0, 2500);
+        Pstraight(0, 1, 1.05);
         stopMotors();
-        sleep(125);
-        moveToLineNew(.150, .150);
+        sleep(150);
+        moveToLineFront(.142, .142);
+        */
+        PDturnTest(-135, 1100);
+        Pstraight(-135, -1, -.96);
+        PDturnTest(-42, 1500);
+        Pstraight(-42, 1, .41);
+        moveToLineFront(.196, .196);
         stopMotors();
         DbgLog.error("back sensed white line");
-        sleep(200);
-        alignLineRed(-.382, .397);
+        sleep(100);
+        alignLineRedBack(-.01, .405);
         stopMotors();
         sleep(100);
-        move(.200, .200);
-        time.reset();
-        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive() && time.milliseconds() < 2500) {
+        alignLineRedFront(-.405, .405);
+        move(.240, .240);
+        while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive()) {
         }
         stopMotors();
         pressBeaconRed();

@@ -25,6 +25,7 @@ public class IMU extends LinearOpMode{
     BNO055IMU IMU;
     Orientation angles;
     Acceleration gravity;
+    static double IMUoffset = 0.0;
 
     public IMU (BNO055IMU imu){
         IMU = imu;
@@ -49,13 +50,27 @@ public class IMU extends LinearOpMode{
 
         telemetry.addData("imu successfully initialized", "");
         DbgLog.error("IMU SUCCESSFULLY INITIALIZED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+        IMUoffset += getYaw();
     }
 
     public double getYaw() { //returns yaw between -179.9999 and 180 degrees
         angles   = IMU.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         double origAngle = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
-        return (origAngle > 180) ? -(origAngle - 360) : -origAngle;  //NEEDS TO BE TESTED BEFORE ANYTHING ELSE
+        double preOffset =  (origAngle > 180) ? -(origAngle - 360) : -origAngle;  //NEEDS TO BE TESTED BEFORE ANYTHING ELSE
+        return getOffsetAngle(preOffset);
     }
+
+    public static double getOffsetAngle(double ang)
+    {
+        double newAng = ang - IMUoffset;
+        if(newAng > 180.0)
+            newAng -= 360;
+        else if(newAng < -180.0)
+            newAng += 360;
+        return newAng;
+    }
+
 
     void composeTelemetry() {
 

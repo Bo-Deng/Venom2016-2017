@@ -134,11 +134,13 @@ public class CustomLinearOpMode extends LinearOpMode {
         //telemetry.addData("front: ", colorF.alpha());
     }
 
-    public void stopMotors() {
+    public void stopMotors() throws InterruptedException{
+        //move(.2, .2);
+        //sleep(20);
         motorBL.setPower(0);
-        motorBR.setPower(0);
         motorFL.setPower(0);
         motorFR.setPower(0);
+        motorBR.setPower(0);
         DbgLog.error("MOTORS ARE STOPPED PLZ STOP");
     }
 

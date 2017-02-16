@@ -189,14 +189,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         double prevTime = time.seconds();
         while (colorF.alpha() < 3 && opModeIsActive()) {
             move(leftSpeed + speedIncrease, rightSpeed - speedIncrease);
-            if (-motorBL.getCurrentPosition() > prevEncoder || time.seconds() - prevTime > .25) { //check every 100 cycles for change in encoder values
+            if (-motorBL.getCurrentPosition() > prevEncoder || time.seconds() - prevTime > .2) { //check every 100 cycles for change in encoder values
                 double encPerSec = (-motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
                 DbgLog.error("encPerSec: " + encPerSec);
-                if (Math.abs(encPerSec) < 45) {
+                if (Math.abs(encPerSec) < 55) {
                     speedIncrease += .005;
                     DbgLog.error("speed increased");
                 }
-                else if (Math.abs(encPerSec) > 65) {
+                else if (Math.abs(encPerSec) > 95) {
                     speedIncrease -= .005;
                     DbgLog.error("speed decreased");
                 }

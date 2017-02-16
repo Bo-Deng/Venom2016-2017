@@ -38,24 +38,24 @@ public class NewShootBeaconBlue extends AutoTemplate {
         }
         motorM.setPower(1);
         //wait 2.5 sec to launch particles
-        sleep(2500);
+        sleep(2000);
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);
 
         moveSquares(-.725, .5);
-        PDturnTest(48, 2400);
-        Pstraight(48, 1, 1.42);
+        PDturnTest(47.5, 1900);
+        Pstraight(47.5, 1, 1.42);
         stopMotors();
         sleep(125);
-        moveToLineFront(.185, .185);
+        moveToLineFront(.195, .195);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.350, .007);
+        alignLineBlueBack(.365, .007);
         sleep(100);
         //align the front once again
-        alignLineBlueFront(.360, -.360);
+        alignLineBlueFront(.405, -.405);
         move(.195, .195);
         time.reset();
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3
@@ -72,10 +72,6 @@ public class NewShootBeaconBlue extends AutoTemplate {
         } */
         move(0, 0);
         pressBeaconBlue();
-        if (Math.abs(imu.getYaw()) < 1) {
-            moveSquares(-2, .5);
-            stop();
-        }
         /*
         PDturnTest(0, 2500);
         Pstraight(0, 1, 1.05);
@@ -83,22 +79,21 @@ public class NewShootBeaconBlue extends AutoTemplate {
         sleep(150);
         moveToLineFront(.142, .142);
         */
-        PDturnTest(135, 1500);
-        Pstraight(135, -1, -.85);
-        PDturnTest(45, 2000);
-        Pstraight(45, 1, .38);
-        moveToLineFront(.170, .170);
+        PDturnTest(135, 1200);
+        Pstraight(135, -1, -.89);
+        PDturnTest(47.5, 1600);
+        Pstraight(47.5, 1, .38);
+        moveToLineFront(.190, .190);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
         alignLineBlueBack(.395, 0);
         stopMotors();
         sleep(100);
-        alignLineBlueFront(.390, -.390);
+        alignLineBlueFront(.385, -.385);
         move(.218, .218);
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive()) {
         }
-        moveSquares(-.1, .7);
         stopMotors();
         pressBeaconBlue();
 

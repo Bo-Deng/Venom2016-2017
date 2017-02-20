@@ -26,11 +26,11 @@ public class ShootOnly extends AutoTemplate {
         initStuff(hardwareMap);
         waitForStart();
         time.reset();
-        servoCapTop.setPosition(.7);
+        servoCapTop.setPosition(.4);
         servoLaunch.setPosition(.8);
         servoB.setPosition(0.5);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.65;
+        targetPower = -0.144 * voltage + 2.6;
         sleep(5000);
         moveSquares(1.13, .5);
         while (shootPower < targetPower) {
@@ -41,13 +41,11 @@ public class ShootOnly extends AutoTemplate {
             //warm up launcher
         }
         motorM.setPower(1);
-        sleep(2500);
+        sleep(3500);`
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);
-        while (time.seconds() < 25 && opModeIsActive()) {
-
-        }
+        moveSquares(-.7, .5);
         //moveSquares(1, .75);
         //stopMotors();
         /*turn(-38);

@@ -24,9 +24,9 @@ public class NewShootBeaconBlue extends AutoTemplate {
     public void runOpMode() throws InterruptedException {
         initStuff(hardwareMap);
         waitForStart();
-        servoCapTop.setPosition(.7);
+        servoCapTop.setPosition(.4);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.65;
+        targetPower = -0.144 * voltage + 2.6;
 
         moveSquares(1, .5);
         while (shootPower < targetPower) {
@@ -52,7 +52,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.365, .007);
+        alignLineBlueBack(.375, .009);
         sleep(100);
         //align the front once again
         alignLineBlueFront(.405, -.405);
@@ -81,13 +81,13 @@ public class NewShootBeaconBlue extends AutoTemplate {
         */
         PDturnTest(135, 1200);
         Pstraight(135, -1, -.89);
-        PDturnTest(47.5, 1600);
-        Pstraight(47.5, 1, .38);
-        moveToLineFront(.190, .190);
+        PDturnTest(48.25, 1600);
+        Pstraight(48.25, 1, .38);
+        moveToLineFront(.205, .205);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.395, 0);
+        alignLineBlueBack(.405, .002);
         stopMotors();
         sleep(100);
         alignLineBlueFront(.385, -.385);

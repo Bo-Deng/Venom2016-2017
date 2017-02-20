@@ -434,7 +434,7 @@ public class AutoTemplate extends CustomLinearOpMode {
 
     public void Pstraight(double desiredAngle, double speed, double squares) throws InterruptedException {
 
-        double kP = 0.042;
+        double kP = 0.043;
         double PIDchange;
         double rightSpeed;
         double leftSpeed;

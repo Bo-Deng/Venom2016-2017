@@ -45,8 +45,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
     double servoCapLPos;
     double servoCapRPos;
-    double voltage = 13.0;
-    double targetPower = 0.85;
+    double voltage = 13.8;
+    double targetPower = 0.6;
 
     int warmUpMs = 88;
     double launcherSpeed = 0.0;
@@ -122,6 +122,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         servoLaunch.setPosition(.15);
         servoB.setPosition(0.5);
 
+        //voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         telemetry.addData("init", " complete");
         telemetry.update();
     }
@@ -165,10 +166,13 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
             //readVolt only reads voltage when motors are stopped,
             //because running motors gives inaccurate voltage
-            if (readVolt)
-                voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+            /*if (readVolt) {
+                double volt = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+                if (Math.abs(volt - voltage) < .6)
+                    voltage = volt;
+            }*/
 
-            targetPower = -0.144 * voltage + 2.65;
+
             readVolt = true;
 
             if (g1_y) {
@@ -206,18 +210,14 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 motorFR.setPower(0);
             }
 
-            /*if (g1_Dup) {
-                motorFL.setPower(.35);
-                motorFR.setPower(.35);
-                motorBR.setPower(-.35);
-                motorBL.setPower(-.35);
+            if (g1_Dup) {
+                targetPower += .025;
+                sleep(300);
             }
-            else {
-                motorFL.setPower(0);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-                motorBL.setPower(0);
-            } */
+            else if (g1_Ddown){
+                targetPower -= .025;
+                sleep(300);
+            }
 
             if (g2_leftY > 0.1) {
                 motorLift.setPower(-g2_leftY);
@@ -244,7 +244,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
             if (g2_rightTrigger > 0.1) { //accelerates motors by .05 if nothing is pressed
                 launcherSpeed = Range.clip(launcherSpeed + .1, -1, targetPower);
-                if (launcherSpeed > .6)
+                if (launcherSpeed > .3)
                     servoLaunchUp();
                 sleep(50);
             } else if (g2_back) { //launcher can go backwards in emergency situations
@@ -398,15 +398,17 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 servoLaunch.setPosition(Range.clip(servoLaunch.getPosition() - .05, 0, 1));
                 sleep(25);
             } */
+            telemetry.addData("LAUNCHER SPEED: ", targetPower);
             telemetry.addData("driveScale: ", driveScale);
+            telemetry.addData("capTop: ", servoCapTop.getPosition());
             telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
             //telemetry.addData("colorB: ", colorB.alpha());
             //telemetry.addData("colorF: ", colorF.alpha());
             telemetry.addData("sweepDown: ", sweepDown);
             telemetry.addData("sweepUp: ", sweepUp);
             //telemetry.addData("auto; ", servoButtonAuto.getPosition());
-            DbgLog.error("voltage: " + voltage);
-            DbgLog.error("targetPower: " + targetPower);
+            //DbgLog.error("voltage: " + voltage);
+            //DbgLog.error("targetPower: " + targetPower);
             //telemetry.addData("servoLaunch: ", servoLaunch.getPosition());
             //telemetry.addData("top: ", servoCapTop.getPosition());
             telemetry.addData("Beacon: ", colorBeacon.red() + "              " + colorBeacon.blue());

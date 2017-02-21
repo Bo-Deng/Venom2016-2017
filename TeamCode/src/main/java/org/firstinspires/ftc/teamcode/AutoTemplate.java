@@ -58,54 +58,13 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void moveToLineNew(double leftSpeed, double rightSpeed) throws InterruptedException {
-        time.reset();
-        double speedIncrease = 0;
-        double prevEncoder = -motorBL.getCurrentPosition();
-        double prevTime = time.seconds();
-        while (colorB.alpha() < 1 && opModeIsActive()) { //move until line is detected
-            move(leftSpeed + speedIncrease, rightSpeed + speedIncrease);
-            if (Math.abs(motorBL.getCurrentPosition()) > prevEncoder && time.seconds() - prevTime > .25) {
-                double encPerSec = (Math.abs(motorBL.getCurrentPosition()) - prevEncoder) / (time.seconds() - prevTime);
-                DbgLog.error("encPerSec: " + encPerSec);
-                if (Math.abs(encPerSec) < 375) {
-                    speedIncrease += .005;
-                    DbgLog.error("speed increased");
-                }
-                else if (Math.abs(encPerSec) > 600) {
-                    speedIncrease -= .005;
-                    DbgLog.error("speed decreased");
-                }
-                prevEncoder = Math.abs(motorBL.getCurrentPosition());
-                prevTime = time.seconds();
-            }
+    public void moveToLineFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        setMaxDrive(375);
+        while (colorF.alpha() < 3 && opModeIsActive()) { //move until line is detected
+            move(1, 1);
         }
         stopMotors();
     }
-
-    public void alignLineBlueNew(double leftSpeed, double rightSpeed) throws InterruptedException {
-        //turns right
-        double speedIncrease = 0;
-        double prevEncoder = -motorBL.getCurrentPosition();
-        double prevTime = time.seconds();
-        while (colorF.alpha() < 3 && opModeIsActive()) {
-            move(leftSpeed + speedIncrease, rightSpeed - speedIncrease);
-            if (-motorBL.getCurrentPosition() > prevEncoder || time.seconds() - prevTime > .75) { //check every 100 cycles for change in encoder values
-                double encPerSec = (-motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
-                DbgLog.error("encPerSec: " + encPerSec);
-                if (Math.abs(encPerSec) < 175) {
-                    speedIncrease += .005;
-                    DbgLog.error("speed increased");
-                }
-                else if (Math.abs(encPerSec) > 350) {
-                    speedIncrease -= .005;
-                    DbgLog.error("speed decreased");
-                }
-            }
-        }
-        stopMotors();
-    }
-
 
     public void alignLineRedBack(double leftSpeed, double rightSpeed) throws InterruptedException {
         //turns right
@@ -128,6 +87,14 @@ public class AutoTemplate extends CustomLinearOpMode {
                 prevEncoder = -motorBL.getCurrentPosition();
                 prevTime = time.seconds();
             }
+        }
+        stopMotors();
+    }
+
+    public void alignLineRedBackNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        setMaxDrive(175);
+        while (colorB.alpha() < 1 && opModeIsActive()) {
+            move(0, 1);
         }
         stopMotors();
     }
@@ -157,6 +124,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
+    public void alignLineBlueBackNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        setMaxDrive(175);
+        while (colorB.alpha() < 1 && opModeIsActive()) {
+            move(1, 0);
+        }
+        stopMotors();
+    }
+
     public void alignLineRedFront(double leftSpeed, double rightSpeed) throws InterruptedException {
         //turns right
         double speedIncrease = 0;
@@ -178,6 +153,14 @@ public class AutoTemplate extends CustomLinearOpMode {
                 prevEncoder = -motorBL.getCurrentPosition();
                 prevTime = time.seconds();
             }
+        }
+        stopMotors();
+    }
+
+    public void alignLineRedFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        setMaxDrive(60);
+        while (colorF.alpha() < 5 && opModeIsActive()) {
+            move(-1, 1);
         }
         stopMotors();
     }
@@ -205,30 +188,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void alignLineRedNew(double leftSpeed, double rightSpeed) throws InterruptedException {
-        //turns right
-        double speedIncrease = 0;
-        double prevEncoder = -motorBL.getCurrentPosition();
-        double prevTime = time.seconds();
+    public void alignLineBlueFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+        setMaxDrive(55);
         while (colorF.alpha() < 3 && opModeIsActive()) {
-            move(leftSpeed - speedIncrease, rightSpeed + speedIncrease);
-            if (-motorBL.getCurrentPosition() < prevEncoder || time.seconds() - prevTime > .75) {
-                double encPerSec = (-motorBL.getCurrentPosition() - prevEncoder) / (time.seconds() - prevTime);
-                DbgLog.error("encPerSec: " + encPerSec);
-                if (Math.abs(encPerSec) < 225) {
-                    speedIncrease += .005;
-                    DbgLog.error("speed increased");
-                }
-                else if (Math.abs(encPerSec) > 350) {
-                    speedIncrease -= .005;
-                    DbgLog.error("speed decreased");
-                }
-                prevEncoder = -motorBL.getCurrentPosition();
-                prevTime = time.seconds();
-            }
+            move(leftSpeed, rightSpeed);
         }
         stopMotors();
     }
+
 
 
     public void moveTime(int msTime, double leftSpeed, double rightSpeed) throws InterruptedException{
@@ -363,7 +330,7 @@ public class AutoTemplate extends CustomLinearOpMode {
         DbgLog.error("ANGLE: " + imu.getYaw());
     }
 
-    public void PDturnTest(double degTurn, int msTime) throws InterruptedException {
+    public void PIDturn(double degTurn, int msTime) throws InterruptedException {
         double startTime = time.milliseconds();
         //double kP = 0.05; //constants that we tuned to fit our robot
         double kP = .0325;
@@ -483,6 +450,13 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
+    public void setMaxDrive(int EPS) {
+        motorBL.setMaxSpeed(EPS);
+        motorFL.setMaxSpeed(EPS);
+        motorBR.setMaxSpeed(EPS);
+        motorFR.setMaxSpeed(EPS);
+    }
+/*
     public void gyroTurn (  double speed, double angle)
             throws InterruptedException {
 
@@ -503,12 +477,6 @@ public class AutoTemplate extends CustomLinearOpMode {
         return robotError;
     }
 
-    /**
-     * returns desired steering force.  +/- 1 range.  +ve = steer left
-     * @param error   Error angle in robot relative degrees
-     * @param PCoeff  Proportional Gain Coefficient
-     * @return
-     */
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
@@ -548,4 +516,5 @@ public class AutoTemplate extends CustomLinearOpMode {
 
         return onTarget;
     }
+    */
 }

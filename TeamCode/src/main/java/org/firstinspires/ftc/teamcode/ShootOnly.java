@@ -41,7 +41,7 @@ public class ShootOnly extends AutoTemplate {
             //warm up launcher
         }
         motorM.setPower(1);
-        sleep(3500);`
+        sleep(3500);
         motorM.setPower(0);
         motorLaunchL.setPower(0);
         motorLaunchR.setPower(0);

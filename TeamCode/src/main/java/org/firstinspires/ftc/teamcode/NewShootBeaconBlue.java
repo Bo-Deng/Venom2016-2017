@@ -44,18 +44,18 @@ public class NewShootBeaconBlue extends AutoTemplate {
         motorLaunchR.setPower(0);
 
         moveSquares(-.725, .5);
-        PDturnTest(47.5, 1900);
+        PIDturn(47.5, 1900);
         Pstraight(47.5, 1, 1.42);
         stopMotors();
         sleep(125);
-        moveToLineFront(.195, .195);
+        moveToLineFront(.205, .205);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.375, .009);
+        alignLineBlueBack(.385, .009);
         sleep(100);
         //align the front once again
-        alignLineBlueFront(.405, -.405);
+        alignLineBlueFront(.415, -.415);
         move(.195, .195);
         time.reset();
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3
@@ -79,18 +79,18 @@ public class NewShootBeaconBlue extends AutoTemplate {
         sleep(150);
         moveToLineFront(.142, .142);
         */
-        PDturnTest(135, 1200);
+        PIDturn(135, 1200);
         Pstraight(135, -1, -.89);
-        PDturnTest(48.25, 1600);
+        PIDturn(48.25, 1600);
         Pstraight(48.25, 1, .38);
         moveToLineFront(.205, .205);
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.405, .002);
+        alignLineBlueBack(.405, .003);
         stopMotors();
         sleep(100);
-        alignLineBlueFront(.385, -.385);
+        alignLineBlueFront(.395, -.395);
         move(.218, .218);
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive()) {
         }

@@ -50,6 +50,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
     int warmUpMs = 88;
     double launcherSpeed = 0.0;
+    int encPerSec = 1250;
     double driveScale = 1.0;
     double sweepDown = .24;
     double sweepUp = .48;
@@ -77,15 +78,26 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//-1149
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//1055
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//1084
+        //motorLaunchL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //motorLaunchR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+
         motorM = hardwareMap.dcMotor.get("motorM");
         motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
         motorLaunchR = hardwareMap.dcMotor.get("motorLaunchR");
+        motorLaunchL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorLaunchR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        motorLaunchL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLaunchR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLaunchL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorLaunchR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorLift = hardwareMap.dcMotor.get("motorLift");
 
         servoButtonAuto = hardwareMap.servo.get("servoButtonAuto");
@@ -130,7 +142,9 @@ public class TeleOpOFFICIAL extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         initStuff();
         waitForStart();
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
+            motorLaunchL.setMaxSpeed(encPerSec);
+            motorLaunchR.setMaxSpeed(encPerSec);
 
             double g1_leftY = -gamepad1.left_stick_y;  //up is changed to 1 and down to -1
             double g1_rightY = -gamepad1.right_stick_y;
@@ -146,6 +160,9 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g1_Dright = gamepad1.dpad_right;
             boolean g1_Dup = gamepad1.dpad_up;
             boolean g1_Ddown = gamepad1.dpad_down;
+
+            boolean g1_start = gamepad1.start;
+            boolean g1_back = gamepad1.back;
 
             double g2_leftY = -gamepad2.left_stick_y;
             double g2_rightY = -gamepad2.right_stick_y;
@@ -163,6 +180,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             boolean g2_a = gamepad2.a;
             boolean g2_y = gamepad2.y;
             boolean g2_back = gamepad2.back;
+            boolean g2_start = gamepad2.start;
 
             //readVolt only reads voltage when motors are stopped,
             //because running motors gives inaccurate voltage
@@ -190,6 +208,16 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 sleep(300);
             }
 
+            if (g2_start) {
+                encPerSec += 50;
+                sleep(300);
+            }
+
+            else if (g2_back) {
+                encPerSec -= 50;
+                sleep(300);
+            }
+
             if (Math.abs(g1_leftY) > 0.1) {
 
                 motorBL.setPower(-g1_leftY * driveScale);
@@ -208,15 +236,6 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } else {
                 motorBR.setPower(0);
                 motorFR.setPower(0);
-            }
-
-            if (g1_Dup) {
-                targetPower += .025;
-                sleep(300);
-            }
-            else if (g1_Ddown){
-                targetPower -= .025;
-                sleep(300);
             }
 
             if (g2_leftY > 0.1) {
@@ -243,7 +262,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             }
 
             if (g2_rightTrigger > 0.1) { //accelerates motors by .05 if nothing is pressed
-                launcherSpeed = Range.clip(launcherSpeed + .1, -1, targetPower);
+                launcherSpeed = Range.clip(launcherSpeed + .1, -1, 1);
                 if (launcherSpeed > .3)
                     servoLaunchUp();
                 sleep(50);
@@ -400,7 +419,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             } */
             telemetry.addData("LAUNCHER SPEED: ", targetPower);
             telemetry.addData("driveScale: ", driveScale);
-            telemetry.addData("capTop: ", servoCapTop.getPosition());
+            telemetry.addData("launcher encoder: ", encPerSec);
             telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
             //telemetry.addData("colorB: ", colorB.alpha());
             //telemetry.addData("colorF: ", colorF.alpha());

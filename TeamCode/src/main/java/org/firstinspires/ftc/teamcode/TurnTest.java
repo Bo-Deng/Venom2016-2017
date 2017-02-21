@@ -28,7 +28,7 @@ public class TurnTest extends AutoTemplate {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.65;
 
-        gyroTurn(TURN_SPEED, -45.0);
+        //gyroTurn(TURN_SPEED, -45.0);
     }
 
     /*public void moveSquares(double squares, double pow) throws InterruptedException {

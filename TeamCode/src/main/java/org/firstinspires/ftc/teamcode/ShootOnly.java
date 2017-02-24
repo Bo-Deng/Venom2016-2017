@@ -23,6 +23,7 @@ public class ShootOnly extends AutoTemplate {
 
 
     public void runOpMode() throws InterruptedException {
+
         initStuff(hardwareMap);
         waitForStart();
         time.reset();
@@ -33,7 +34,7 @@ public class ShootOnly extends AutoTemplate {
         targetPower = -0.144 * voltage + 2.6;
         sleep(5000);
         moveSquares(1.13, .5);
-        while (shootPower < targetPower) {
+        while (shootPower < targetPower && opModeIsActive()) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
             motorLaunchR.setPower(-shootPower);

@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.util.Range;
 @Autonomous(name = "NewShootBeaconBlueNew", group = "Autonomous")
 public class NewShootBeaconBlueNew extends AutoTemplate {
 
-
     double targetPower = 0.0;
     double shootPower = 0.0;
     //double rRatio = 1;//0.905;
@@ -23,17 +22,13 @@ public class NewShootBeaconBlueNew extends AutoTemplate {
 
     public void runOpMode() throws InterruptedException {
         initStuff(hardwareMap);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
         servoCapTop.setPosition(.4);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         targetPower = -0.144 * voltage + 2.6;
 
         moveSquares(1, .5);
-        while (shootPower < targetPower) {
+        while (shootPower < targetPower && opModeIsActive()) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
             motorLaunchR.setPower(-shootPower);
@@ -52,14 +47,14 @@ public class NewShootBeaconBlueNew extends AutoTemplate {
         Pstraight(47.5, 1, 1.42);
         stopMotors();
         sleep(125);
-        moveToLineFront(.195, .195);
+        moveToLineFrontNew();
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.375, .009);
+        alignLineBlueBackNew();
         sleep(100);
         //align the front once again
-        alignLineBlueFront(.405, -.405);
+        alignLineBlueFrontNew();
         move(.195, .195);
         time.reset();
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3
@@ -81,20 +76,20 @@ public class NewShootBeaconBlueNew extends AutoTemplate {
         Pstraight(0, 1, 1.05);
         stopMotors();
         sleep(150);
-        moveToLineFront(.142, .142);
+        moveToLineFrontNew(.142, .142);
         */
         PIDturn(135, 1200);
         Pstraight(135, -1, -.89);
         PIDturn(48.25, 1600);
         Pstraight(48.25, 1, .38);
-        moveToLineFront(.205, .205);
+        moveToLineFrontNew();
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineBlueBack(.405, .002);
+        alignLineBlueBackNew();
         stopMotors();
         sleep(100);
-        alignLineBlueFront(.385, -.385);
+        alignLineBlueFrontNew();
         move(.218, .218);
         while (colorBeacon.blue() < 3 && colorBeacon.red() < 3 && opModeIsActive()) {
         }

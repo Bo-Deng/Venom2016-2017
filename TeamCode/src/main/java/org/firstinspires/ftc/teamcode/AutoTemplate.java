@@ -58,12 +58,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void moveToLineFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+    public void moveToLineFrontNew() throws InterruptedException {
+        setEncoders(true);
         setMaxDrive(375);
         while (colorF.alpha() < 3 && opModeIsActive()) { //move until line is detected
             move(1, 1);
         }
         stopMotors();
+        setEncoders(false);
     }
 
     public void alignLineRedBack(double leftSpeed, double rightSpeed) throws InterruptedException {
@@ -91,12 +93,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void alignLineRedBackNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+    public void alignLineRedBackNew() throws InterruptedException {
+        setEncoders(true);
         setMaxDrive(175);
         while (colorB.alpha() < 1 && opModeIsActive()) {
             move(0, 1);
         }
         stopMotors();
+        setEncoders(false);
     }
 
 
@@ -124,12 +128,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void alignLineBlueBackNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+    public void alignLineBlueBackNew() throws InterruptedException {
+        setEncoders(true);
         setMaxDrive(175);
         while (colorB.alpha() < 1 && opModeIsActive()) {
             move(1, 0);
         }
         stopMotors();
+        setEncoders(false);
     }
 
     public void alignLineRedFront(double leftSpeed, double rightSpeed) throws InterruptedException {
@@ -157,12 +163,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void alignLineRedFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+    public void alignLineRedFrontNew() throws InterruptedException {
+        setEncoders(true);
         setMaxDrive(60);
         while (colorF.alpha() < 5 && opModeIsActive()) {
             move(-1, 1);
         }
         stopMotors();
+        setEncoders(false);
     }
 
     public void alignLineBlueFront(double leftSpeed, double rightSpeed) throws InterruptedException {
@@ -188,12 +196,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         stopMotors();
     }
 
-    public void alignLineBlueFrontNew(double leftSpeed, double rightSpeed) throws InterruptedException {
+    public void alignLineBlueFrontNew() throws InterruptedException {
+        setEncoders(true);
         setMaxDrive(55);
         while (colorF.alpha() < 3 && opModeIsActive()) {
-            move(leftSpeed, rightSpeed);
+            move(1, -1);
         }
         stopMotors();
+        setEncoders(false);
     }
 
 
@@ -270,7 +280,7 @@ public class AutoTemplate extends CustomLinearOpMode {
         DbgLog.error(colorBeacon.red() + "    " + colorBeacon.blue());
         if (colorBeacon.blue() >= 2) {
             telemetry.addData("Right:", " is blue");
-            servoButtonAuto.setPosition(.15);
+            servoButtonAuto.setPosition(.17);
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE BLUE");
             sleep(100);
             moveTime(900, .6, .6);
@@ -279,7 +289,7 @@ public class AutoTemplate extends CustomLinearOpMode {
 
         else if (colorBeacon.red() >= 2) {
             telemetry.addData("Right:", " is red");
-            servoButtonAuto.setPosition(.48);
+            servoButtonAuto.setPosition(.56 /*.48*/);
             DbgLog.error("RED RED RED RED RED RED");
             sleep(100);
             moveTime(900, .6, .6);
@@ -456,6 +466,7 @@ public class AutoTemplate extends CustomLinearOpMode {
         motorBR.setMaxSpeed(EPS);
         motorFR.setMaxSpeed(EPS);
     }
+
 /*
     public void gyroTurn (  double speed, double angle)
             throws InterruptedException {

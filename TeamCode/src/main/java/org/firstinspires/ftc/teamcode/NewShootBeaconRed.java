@@ -30,7 +30,7 @@ public class NewShootBeaconRed extends AutoTemplate {
         targetPower = -0.144 * voltage + 2.6;
 
         moveSquares(1, .5);
-        while (shootPower < targetPower) {
+        while (shootPower < targetPower && opModeIsActive()) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
             motorLaunchR.setPower(-shootPower);
@@ -54,7 +54,7 @@ public class NewShootBeaconRed extends AutoTemplate {
         stopMotors();
         DbgLog.error("back sensed white line");
         sleep(100);
-        alignLineRedBack(-.001, .405);
+        alignLineRedBack(-.005, .405);
         sleep(100);
         //align the front once again
         alignLineRedFront(-.395, .395);

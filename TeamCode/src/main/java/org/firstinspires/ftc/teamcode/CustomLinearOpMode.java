@@ -145,10 +145,27 @@ public class CustomLinearOpMode extends LinearOpMode {
     }
 
     public void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
+        double startTime = System.currentTimeMillis();
+        double curTime = startTime;
+        while(opModeIsActive() && curTime - startTime < ms)
+        {
+            curTime = System.currentTimeMillis();
+            idle();
         }
-        catch (Exception E) {
+    }
+
+    public void setEncoders(boolean b) {
+        if (b = true && opModeIsActive()) {
+            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        else {
+            motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 

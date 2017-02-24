@@ -208,12 +208,11 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 sleep(300);
             }
 
-            if (g2_start) {
+            if (g1_Dup) {
                 encPerSec += 50;
                 sleep(300);
             }
-
-            else if (g2_back) {
+            if (g1_Ddown) {
                 encPerSec -= 50;
                 sleep(300);
             }

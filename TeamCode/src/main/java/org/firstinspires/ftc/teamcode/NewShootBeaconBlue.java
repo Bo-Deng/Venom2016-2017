@@ -29,7 +29,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         targetPower = -0.144 * voltage + 2.6;
 
         moveSquares(1, .5);
-        while (shootPower < targetPower) {
+        while (shootPower < targetPower && opModeIsActive()) {
             shootPower = Range.clip(shootPower + .1, 0, targetPower);
             motorLaunchL.setPower(shootPower);
             motorLaunchR.setPower(-shootPower);

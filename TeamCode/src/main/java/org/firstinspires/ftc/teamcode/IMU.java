@@ -61,6 +61,11 @@ public class IMU extends LinearOpMode{
         return getOffsetAngle(preOffset);
     }
 
+    public double getPitch() { //returns yaw between -179.9999 and 180 degrees
+        angles   = IMU.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle);
+    }
+
     public static double getOffsetAngle(double ang)
     {
         double newAng = ang - IMUoffset;

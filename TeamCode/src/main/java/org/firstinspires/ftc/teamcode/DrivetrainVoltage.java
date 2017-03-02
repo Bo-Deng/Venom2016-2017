@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by Bo on 1/9/2017.
  */
+@Disabled
 @Autonomous(name = "DriveVolt", group = "Testing")
 public class DrivetrainVoltage extends AutoTemplate {
     @Override

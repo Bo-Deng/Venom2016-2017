@@ -26,7 +26,7 @@ public class NewShootBeaconBlue extends AutoTemplate {
         waitForStart();
         servoCapTop.setPosition(.4);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.6;
+        targetPower = -0.144 * voltage + 2.63;
 
         moveSquares(1, .5);
         while (shootPower < targetPower && opModeIsActive()) {

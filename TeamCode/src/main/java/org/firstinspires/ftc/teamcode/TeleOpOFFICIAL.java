@@ -50,7 +50,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
 
     int warmUpMs = 88;
     double launcherSpeed = 0.0;
-    int encPerSec = 1250;
+    int encPerSec = 1650;
     double driveScale = 1.0;
     double sweepDown = .24;
     double sweepUp = .48;
@@ -85,7 +85,6 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
 
         motorM = hardwareMap.dcMotor.get("motorM");
         motorLaunchL = hardwareMap.dcMotor.get("motorLaunchL");
@@ -139,6 +138,18 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         telemetry.update();
     }
 
+    public void move(double leftSpeed, double rightSpeed) throws InterruptedException {
+        if (!opModeIsActive())
+            return;
+        motorBL.setPower(-leftSpeed);
+        motorBR.setPower(-rightSpeed);
+        motorFL.setPower(leftSpeed);
+        motorFR.setPower(rightSpeed);
+
+        //telemetry.addData("back: ", colorB.alpha());
+        //telemetry.addData("front: ", colorF.alpha());
+    }
+
     public void runOpMode() throws InterruptedException {
         initStuff();
         waitForStart();
@@ -190,8 +201,16 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                     voltage = volt;
             }*/
 
-
             readVolt = true;
+
+            if (imu.getPitch() > -155.0 && imu.getPitch() < -100.0) {
+                while (imu.getPitch() > -155.0 && imu.getPitch() < -100.0)
+                    move(1, 1);
+            }
+            else if (imu.getPitch() < 155.0 && imu.getPitch() > 100.0) {
+                while (imu.getPitch() < 155.0 && imu.getPitch() > 100.0)
+                    move(-1, -1);
+            }
 
             if (g1_y) {
                 if (driveScale == 1) {
@@ -303,10 +322,10 @@ public class TeleOpOFFICIAL extends LinearOpMode {
             }
 
             if (g1_Dleft) {
-                servoButtonAuto.setPosition(Range.clip(servoButtonAuto.getPosition() - .05, 0, 1));
+                servoButtonAuto.setPosition(/*Range.clip(servoButtonAuto.getPosition() - .05, 0, 1) */ 0.0);
                 sleep(50);
             } else if (g1_Dright) {
-                servoButtonAuto.setPosition(Range.clip(servoButtonAuto.getPosition() + .05, 0, 1));
+                servoButtonAuto.setPosition(/*Range.clip(servoButtonAuto.getPosition() + .05, 0, 1)*/ .58);
                 sleep(50);
             }
             if (g2_rightBumper) {
@@ -327,13 +346,13 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 sweepUp();
 
             if (g2_a) {
-                sweepDown = Range.clip(sweepDown - .01, 0, .74);
-                sweepUp = Range.clip(sweepUp - .01, .26, 1);
+                sweepDown = Range.clip(sweepDown - .02, 0, .74);
+                sweepUp = Range.clip(sweepUp - .02, .26, 1);
                 sleep(100);
             }
             else if (g2_y) {
-                sweepDown = Range.clip(sweepDown + .01, 0, .74);
-                sweepUp = Range.clip(sweepUp + .01, .26, 1);
+                sweepDown = Range.clip(sweepDown + .02, 0, .74);
+                sweepUp = Range.clip(sweepUp + .02, .26, 1);
                 sleep(100);
             }
             else if (g1_x) {
@@ -416,8 +435,8 @@ public class TeleOpOFFICIAL extends LinearOpMode {
                 servoLaunch.setPosition(Range.clip(servoLaunch.getPosition() - .05, 0, 1));
                 sleep(25);
             } */
-            telemetry.addData("LAUNCHER SPEED: ", targetPower);
-            telemetry.addData("driveScale: ", driveScale);
+            telemetry.addData("IMU Pitch: ", imu.getPitch());
+            telemetry.addData("auto button", servoButtonAuto.getPosition());
             telemetry.addData("launcher encoder: ", encPerSec);
             telemetry.addData("BL BR FL FR", motorBL.getCurrentPosition() + " " + motorBR.getCurrentPosition() + " " + motorFL.getCurrentPosition() + " " + motorFR.getCurrentPosition());
             //telemetry.addData("colorB: ", colorB.alpha());
@@ -435,7 +454,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         }
     }
 
-    public void servoLaunchUp() {
+    public void servoLaunchUp() throws InterruptedException {
         if (servoLaunch.getPosition() < 0.75) {
             motorM.setPower(-1);
             mDisabled = true;
@@ -446,20 +465,17 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         }
     }
 
-    public void servoLaunchDown() {
+    public void servoLaunchDown() throws InterruptedException {
         if (servoLaunch.getPosition() > .16) {
             motorM.setPower(0);
             mDisabled = true;
             servoLaunch.setPosition(.15);
-            try {
-                Thread.sleep(500);
-            } catch (Exception E) {
-            }
+            sleep(500);
             mDisabled = false;
         }
     }
 
-    public void sweepDown() {
+    public void sweepDown() throws InterruptedException {
         if (Math.abs(servoB.getPosition() - sweepDown) > .002) {
             servoB.setPosition(sweepDown);
             sleep(200);
@@ -467,7 +483,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         servoSweep.setPower(1);
     }
 
-    public void sweepUp() {
+    public void sweepUp() throws InterruptedException {
         servoSweep.setPower(0);
         if (Math.abs(servoB.getPosition() - sweepUp) > .002) {
             servoB.setPosition(sweepUp);
@@ -475,12 +491,7 @@ public class TeleOpOFFICIAL extends LinearOpMode {
         }
     }
 
-    public void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
-        }
-        catch (Exception E) {
-
-        }
+    public void sleep(int ms) throws InterruptedException{
+        Thread.sleep(ms);
     }
 }

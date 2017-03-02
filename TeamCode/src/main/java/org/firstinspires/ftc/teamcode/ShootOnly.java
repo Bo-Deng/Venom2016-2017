@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by Bo on 11/28/2016.
  */
-@Autonomous(name = "ShootOnly", group = "Autonomous")
+@Autonomous(name = "ShootOnlyOld", group = "Autonomous")
 public class ShootOnly extends AutoTemplate {
 
     double targetPower = 0.0;
@@ -31,7 +31,7 @@ public class ShootOnly extends AutoTemplate {
         servoLaunch.setPosition(.8);
         servoB.setPosition(0.5);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
-        targetPower = -0.144 * voltage + 2.6;
+        targetPower = -0.144 * voltage + 2.63;
         sleep(5000);
         moveSquares(1.13, .5);
         while (shootPower < targetPower && opModeIsActive()) {

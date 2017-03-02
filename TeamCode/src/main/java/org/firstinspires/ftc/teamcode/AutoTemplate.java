@@ -256,14 +256,14 @@ public class AutoTemplate extends CustomLinearOpMode {
         DbgLog.error(colorBeacon.red() + "    " + colorBeacon.blue());
         if (colorBeacon.blue() >= 2 && colorBeacon.red() <= 1) {
             telemetry.addData("Right:", " is blue");
-            servoButtonAuto.setPosition(.48);
+            servoButtonAuto.setPosition(.55);
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE BLUE");
             sleep(300);
         }
 
         else if (colorBeacon.red() >= 2 && colorBeacon.blue() <= 1) {
             telemetry.addData("Right:", " is red");
-            servoButtonAuto.setPosition(.17);
+            servoButtonAuto.setPosition(0.0);
             DbgLog.error("RED RED RED RED RED RED");
             sleep(300);
         }
@@ -280,7 +280,7 @@ public class AutoTemplate extends CustomLinearOpMode {
         DbgLog.error(colorBeacon.red() + "    " + colorBeacon.blue());
         if (colorBeacon.blue() >= 2) {
             telemetry.addData("Right:", " is blue");
-            servoButtonAuto.setPosition(.17);
+            servoButtonAuto.setPosition(0.0);
             DbgLog.error("BLUE BLUE BLUE BLUE BLUE BLUE");
             sleep(100);
             moveTime(900, .6, .6);
@@ -289,7 +289,7 @@ public class AutoTemplate extends CustomLinearOpMode {
 
         else if (colorBeacon.red() >= 2) {
             telemetry.addData("Right:", " is red");
-            servoButtonAuto.setPosition(.56 /*.48*/);
+            servoButtonAuto.setPosition(.55 /*.48*/);
             DbgLog.error("RED RED RED RED RED RED");
             sleep(100);
             moveTime(900, .6, .6);
